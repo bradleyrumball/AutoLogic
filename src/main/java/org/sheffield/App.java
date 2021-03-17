@@ -2,8 +2,10 @@ package org.sheffield;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,11 +72,17 @@ public class App {
     return cu;
   }
 
+  public static void getBranchConditions(CompilationUnit cu) {
+    cu.findAll(IfStmt.class).stream().forEach(expression -> {
+      System.out.println(expression.getCondition());
+    });
+  }
 
   public static void main(String[] args) throws FileNotFoundException {
     CompilationUnit cu = getCU("src/main/resources/classundertest/Triangle.java");
-    cu = injectMethodAllBranches(cu);
-    System.out.println(cu);
+//    cu = injectMethodAllBranches(cu);
+//    System.out.println(cu);
+    getBranchConditions(cu);
 
   }
 }
