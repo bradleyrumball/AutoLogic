@@ -2,31 +2,23 @@ package org.sheffield;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Method;
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class App {
 
-  static void coveredBranch(int id, Set<Integer> coveredBranches) {
-    if (!coveredBranches.contains(id)) {
-      System.out.println("* covered new branch: " + id);
-      coveredBranches.add(id);
-    }
-  }
-
   /**
    * Takes valid path of class for which we wish to produce a test suite
+   *
    * @param path Valid path to class
-   * @return  Compliation unit
-   * @throws FileNotFoundException
+   * @return Compilation unit
+   * @throws FileNotFoundException Thrown when the JP can't parse
    */
   public static CompilationUnit getCU(String path) throws FileNotFoundException {
     File f = new File(path);
@@ -34,10 +26,13 @@ public class App {
   }
 
   /**
-   * Can be
-   * @param cu
-   * @return
+   * Could be used to generate code coverage stats -based on using the coveredBranch method in
+   * RandomlyTestTriangle code from phil
+   *
+   * @param cu cu to be injected
+   * @return an updated Complication Unit containing the injected method statements
    */
+  @Deprecated
   public static CompilationUnit injectMethodAllBranches(CompilationUnit cu) {
     String methodName = "coveredBranch";
     String param = "coveredBranches";
@@ -72,17 +67,22 @@ public class App {
     return cu;
   }
 
-  public static void getBranchConditions(CompilationUnit cu) {
-    cu.findAll(IfStmt.class).stream().forEach(expression -> {
-      System.out.println(expression.getCondition());
-    });
+  @Deprecated
+  public static ArrayList<Expression> getBranchConditions(CompilationUnit cu) {
+    ArrayList<Expression> classConditions = new ArrayList<>();
+    cu.findAll(IfStmt.class).forEach(expression -> classConditions.add(expression.getCondition()));
+    return classConditions;
   }
 
   public static void main(String[] args) throws FileNotFoundException {
     CompilationUnit cu = getCU("src/main/resources/classundertest/Triangle.java");
-//    cu = injectMethodAllBranches(cu);
-//    System.out.println(cu);
-    getBranchConditions(cu);
+    Decomposer d = new Decomposer(cu);
+//    d.getParams();
+
+    System.out.println(d.getIfPredicates());
+
+//    d.getStatement();
+
 
   }
 }
