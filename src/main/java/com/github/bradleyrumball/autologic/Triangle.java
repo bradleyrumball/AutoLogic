@@ -1,4 +1,4 @@
-package org.sheffield;
+package com.github.bradleyrumball.autologic;
 
 
 public class Triangle {

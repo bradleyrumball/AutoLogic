@@ -1,11 +1,11 @@
-package org.sheffield;
+package com.github.bradleyrumball.autologic;
 
+import com.github.bradleyrumball.autologic.Triangle.Type;
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.sheffield.Triangle.Type;
 
 public class ScratchPad {
 

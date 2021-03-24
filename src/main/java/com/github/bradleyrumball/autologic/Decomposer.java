@@ -1,4 +1,4 @@
-package org.sheffield;
+package com.github.bradleyrumball.autologic;
 
 
 import com.github.javaparser.ast.CompilationUnit;

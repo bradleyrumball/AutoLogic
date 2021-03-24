@@ -1,4 +1,4 @@
-package org.sheffield;
+package com.github.bradleyrumball.autologic;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -76,6 +76,7 @@ public class App {
   }
 
   public static void main(String[] args) throws FileNotFoundException {
+
     CompilationUnit cu = getCU("src/main/resources/classundertest/Triangle.java");
     Decomposer d = new Decomposer(cu);
 //    System.out.println(d.getMethod().get(0).getParameters());

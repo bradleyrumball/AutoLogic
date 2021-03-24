@@ -1,4 +1,4 @@
-package org.sheffield;
+package com.github.bradleyrumball.autologic;
 
 import static org.junit.Assert.assertTrue;
 
