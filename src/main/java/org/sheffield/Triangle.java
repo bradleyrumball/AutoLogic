@@ -1,4 +1,4 @@
-package org.sheffield.classundertest;
+package org.sheffield;
 
 
 public class Triangle {

@@ -34,6 +34,12 @@ public class Decomposer {
     return methodParams;
   }
 
+  public ArrayList<MethodDeclaration> getMethod() {
+    ArrayList<MethodDeclaration> mA= new ArrayList<>();
+    cu.findAll(MethodDeclaration.class).forEach(m -> mA.add(m));
+    return mA;
+  }
+
   public void getStatement() {
     cu.findAll(Node.class).forEach(m -> {
       if(m.getClass() == VariableDeclarator.class || m.getClass() == AssignExpr.class) {
@@ -62,7 +68,7 @@ public class Decomposer {
       @Override
       public void visit(IfStmt n, Void arg) {
         // Base Case
-        expressionList.addLast(new EnclosedExpr(n.getCondition()));
+        expressionList.addLast(n.getCondition());
         branches.add(expressionList.stream().collect(Collectors.toCollection(LinkedList::new)));
 
         n.getThenStmt().accept(this, arg);

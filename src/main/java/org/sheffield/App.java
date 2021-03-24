@@ -2,6 +2,7 @@ package org.sheffield;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
@@ -77,11 +78,14 @@ public class App {
   public static void main(String[] args) throws FileNotFoundException {
     CompilationUnit cu = getCU("src/main/resources/classundertest/Triangle.java");
     Decomposer d = new Decomposer(cu);
-//    d.getParams();
+//    System.out.println(d.getMethod().get(0).getParameters());
+//    System.out.println(d.getParams().get(0));
+//    InfectionTemplate template = new InfectionTemplate(d.getParams());
 
-    System.out.println(d.getIfPredicates());
 
-//    d.getStatement();
+    Expression e = d.getIfPredicates().get(0).get(0);
+    BinaryExpr ue = e.asBinaryExpr();
+    System.out.println(ue.getOperator());
 
 
   }
