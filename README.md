@@ -38,8 +38,8 @@ Team:
 - [ ] Coverage  level  computed  and  individual  uncovered  elements  re-ported 😁/🙂
 
 #### Test Suite Output ####
-- [ ] Simple output of inputs to the command line 😐/😟/😭
-- [ ] Writes out JUnit Java code that can be compiled separately and run 😁/🙂
+- [x] Simple output of inputs to the command line 😐/😟/😭
+- [x] Writes out JUnit Java code that can be compiled separately and run 😁/🙂
 
 #### GitHub Repo andREADME.md ####
 - [ ] Problems with repo (e.g., files missing) and/or instructions deficient 😐/😟/😭
