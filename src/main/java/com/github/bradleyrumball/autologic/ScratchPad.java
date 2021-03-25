@@ -1,5 +1,6 @@
 package com.github.bradleyrumball.autologic;
 
+import com.github.bradleyrumball.autologic.GA.Fitness;
 import com.github.bradleyrumball.autologic.Triangle.Type;
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
 import java.util.ArrayList;

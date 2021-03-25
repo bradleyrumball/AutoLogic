@@ -1,4 +1,4 @@
-package com.github.bradleyrumball.autologic;
+package com.github.bradleyrumball.autologic.GA;
 
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
 
