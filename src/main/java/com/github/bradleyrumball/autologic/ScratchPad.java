@@ -20,6 +20,9 @@ public class ScratchPad {
   private static ArrayList<ArrayList> testVals = new ArrayList();
 
   public static void main(String[] args) throws Exception {
+//    Two lines below are to test out population generation
+//    Population p = new Population(10);
+//    System.out.println(p.toString());
     randomlyTestClassify();
   }
 

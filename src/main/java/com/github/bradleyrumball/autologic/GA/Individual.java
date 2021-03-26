@@ -1,7 +1,7 @@
 package com.github.bradleyrumball.autologic.GA;
 
 
-import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Random;
 
 public class Individual {
@@ -10,30 +10,34 @@ public class Individual {
    * Temp?
    * Number of params for the method (For triangle this is three (Side1, Side2, Side3)
    */
-  protected int numberOfParams = 3;
+  private final int NUMBER_OF_GENES = 3;
 
   /**
    * Temp
    * Represents the number of branches to explore
    */
-//  protected int numberOfBranches = 14;
+  private final int NUMBER_OF_POSSIBLE_BRANCHES = 14;
 
   /**
    * Genes represent the parameteres that are going into the method
+   * Initial capacity set to the number of params
    */
-  private ArrayList<Integer> genes = new ArrayList<>(numberOfParams);
+  private Hashtable<Integer, Integer> genes = new Hashtable<>(NUMBER_OF_GENES);
 
   /**
    * Fitness is an array where the index is the branch index and the value is the
    * fitness score of the gene input for the given branch
+   * initial capacity set to the number of branches
+   *
+   * FITNESS MUST BE DECLARED WITH INTEGER AND NOT INT AS NULL IS USED FOR INITIAL FITNESS
    */
-  private ArrayList<Integer> fitness = new ArrayList<>();
+  private Hashtable<Integer, Integer> fitness = new Hashtable<>(NUMBER_OF_POSSIBLE_BRANCHES);
 
   /**
    * Constructor, creates individual with random genes (params)
    */
   public Individual() {
-    genes.forEach( gene ->  gene = new Random().nextInt());
+    for (int i = 0; i < NUMBER_OF_GENES; i++) genes.put(i, new Random().nextInt());
   }
 
   /**
@@ -41,7 +45,7 @@ public class Individual {
    * @param geneID
    * @return value of individual gene/param
    */
-  protected Integer getSingleGene(Integer geneID) {
+  protected Integer getSingleGene(int geneID) {
     return genes.get(geneID);
   }
 
@@ -51,10 +55,10 @@ public class Individual {
    * @param geneID The ID of the gene that you wish to set
    * @param geneValue The value that you wish to set the gene to
    */
-  protected void setSingleGene(Integer geneID, Integer geneValue) {
-    genes.set(geneID, geneValue);
+  protected void setSingleGene(int geneID, Integer geneValue) {
+    genes.put(geneID, geneValue);
     // If a gene has been updated or set its fitness scores must be restarted
-    fitness.forEach( f -> f = 0);
+    fitness.clear();
   }
 
   /**
@@ -62,7 +66,7 @@ public class Individual {
    * @param branchIndex
    * @return
    */
-  protected Integer getBranchFitness(Integer branchIndex) {
+  protected Integer getBranchFitness(int branchIndex) {
     return fitness.get(branchIndex);
   }
 
@@ -73,8 +77,8 @@ public class Individual {
    * @param branchIndex
    * @param fitnessScore
    */
-  protected void setSingleFitness(Integer branchIndex, Integer fitnessScore) {
-    fitness.set(branchIndex, fitnessScore);
+  protected void setSingleFitness(int branchIndex, Integer fitnessScore) {
+    fitness.put(branchIndex, fitnessScore);
   }
 
   /**
