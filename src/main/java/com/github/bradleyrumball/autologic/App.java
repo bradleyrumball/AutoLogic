@@ -79,6 +79,7 @@ public class App {
 
     CompilationUnit cu = getCU("src/main/resources/classundertest/Triangle.java");
     Decomposer d = new Decomposer(cu);
+    System.out.println(LogInjector.injectMethodAllBranches(cu));
 //    System.out.println(d.getMethod().get(0).getParameters());
 //    System.out.println(d.getParams().get(0));
 //    InfectionTemplate template = new InfectionTemplate(d.getParams());
