@@ -17,7 +17,7 @@ Team:
 - [ ] Method under test fully parsed, with conditions and structure of predicates extracted and analysed 😁
 
 #### Test Requirement Generation ####
-- [ ] Simple coverage criterion implemented (e.g., Condition Coverage) 😟/😭
+- [X] Simple coverage criterion implemented (e.g., Condition Coverage) 😟/😭
 - [ ] Advanced coverage criterion implemented (e.g., Restricted or Cor-related MCDC) 🙂/😐
 - [ ] Multiple criteria implemented 😁
 
@@ -31,7 +31,7 @@ Team:
 - [ ] Configurable random number generation (e.g., input parameters can be configured with upper and lower bounds) 😟
 - [ ] Advanced random number generation (e.g., can be used to generate non-numerical inputs randomly, such as strings and other types, like objects) 😐
 - [ ] Advanced random number generation (e.g., can use example inputs as the basis of seeds, similar to fuzzing), or, applies a search-based technique “out of the box” (e.g., the AVMf) 🙂
-- [ ] Applies  own  search-based  method  (e.g.,  implemented  own  evolutionary algorithm) or similarly advanced technique 😁
+- [x] Applies  own  search-based  method  (e.g.,  implemented  own  evolutionary algorithm) or similarly advanced technique 😁
 
 #### Coverage Level Computation and Reporting ####
 - [ ] Coverage level computed for simple criterion as implemented for (2)above 😐/😟/😭
