@@ -4,10 +4,10 @@ import com.github.javaparser.ast.expr.BinaryExpr.Operator;
 
 public class Fitness {
 
-  private int left;
-  private int right;
-  private Operator operator;
-  private int K;
+  private final int left;
+  private final int right;
+  private final Operator operator;
+  private final int K;
 
   public Fitness (int left, int right, Operator operator, int K) {
     this.left = left;

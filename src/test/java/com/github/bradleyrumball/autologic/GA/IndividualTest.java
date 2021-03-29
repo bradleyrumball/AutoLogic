@@ -1,9 +1,9 @@
 package com.github.bradleyrumball.autologic.GA;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class IndividualTest {
 
@@ -18,10 +18,9 @@ public class IndividualTest {
    * Checks that fitness has been set back to 0
    */
   @Test
-  public void setSingleGene() {
-    i.setSingleFitness(0, 3);
-    i.setSingleGene(0, 1);
-    Integer newFitness = i.getBranchFitness(0);
-    assertEquals(null, newFitness);
+  public void setGene() {
+    i.setGene(0, 1);
+    int newFitness = i.getFitness();
+    assertEquals(Integer.MAX_VALUE, newFitness);
   }
 }

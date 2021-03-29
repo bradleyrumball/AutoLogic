@@ -1,8 +1,10 @@
 package com.github.bradleyrumball.autologic;
 
 import com.github.bradleyrumball.autologic.GA.Fitness;
+import com.github.bradleyrumball.autologic.GA.Population;
 import com.github.bradleyrumball.autologic.Triangle.Type;
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -16,14 +18,17 @@ public class ScratchPad {
    static final int MAX_INT = Integer.MAX_VALUE;
 //  static final int MIN_INT = -10;
 //  static final int MAX_INT = 10;
+
+
   private static HashMap<Integer, Integer> coveredBranches = new HashMap<>();
   private static ArrayList<ArrayList> testVals = new ArrayList();
 
   public static void main(String[] args) throws Exception {
-//    Two lines below are to test out population generation
-//    Population p = new Population(10);
-//    System.out.println(p.toString());
-    randomlyTestClassify();
+//    Three lines below are to test out population generation
+    Population p = new Population(10);
+//    Individual i = new Individual();
+    System.out.println(p.toString());
+//    randomlyTestClassify();
   }
 
   static void randomlyTestClassify() throws Exception {

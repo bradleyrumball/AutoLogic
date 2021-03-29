@@ -1,7 +1,7 @@
 package com.github.bradleyrumball.autologic.GA;
 
 
-import java.util.Hashtable;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Individual {
@@ -12,41 +12,42 @@ public class Individual {
    */
   private final int NUMBER_OF_GENES = 3;
 
-  /**
-   * Temp
-   * Represents the number of branches to explore
-   */
-  private final int NUMBER_OF_POSSIBLE_BRANCHES = 14;
 
   /**
-   * Genes represent the parameteres that are going into the method
+   * Genes represent the parameters that are going into the method
    * Initial capacity set to the number of params
    */
-  private Hashtable<Integer, Integer> genes = new Hashtable<>(NUMBER_OF_GENES);
+  private final int[] genes = new int[NUMBER_OF_GENES];
 
   /**
-   * Fitness is an array where the index is the branch index and the value is the
-   * fitness score of the gene input for the given branch
-   * initial capacity set to the number of branches
+   * The current fitness of the individual
    *
-   * FITNESS MUST BE DECLARED WITH INTEGER AND NOT INT AS NULL IS USED FOR INITIAL FITNESS
+   * Worst fitness is determined as Integer.Max
    */
-  private Hashtable<Integer, Integer> fitness = new Hashtable<>(NUMBER_OF_POSSIBLE_BRANCHES);
+  private int fitness = Integer.MAX_VALUE;
 
   /**
    * Constructor, creates individual with random genes (params)
    */
   public Individual() {
-    for (int i = 0; i < NUMBER_OF_GENES; i++) genes.put(i, new Random().nextInt());
+    for (int i = 0; i < genes.length; i++) genes[i] = new Random().nextInt();
   }
 
   /**
    * Getter for individual gene
-   * @param geneID
+   * @param id the if of the individual gene that we wish to return
    * @return value of individual gene/param
    */
-  protected Integer getSingleGene(int geneID) {
-    return genes.get(geneID);
+  protected int getGene(int id) {
+    return genes[id];
+  }
+
+  protected int[] getGenes() {
+    return genes;
+  }
+
+  protected int getGeneCount() {
+    return NUMBER_OF_GENES;
   }
 
   /**
@@ -55,39 +56,27 @@ public class Individual {
    * @param geneID The ID of the gene that you wish to set
    * @param geneValue The value that you wish to set the gene to
    */
-  protected void setSingleGene(int geneID, Integer geneValue) {
-    genes.put(geneID, geneValue);
+  protected void setGene(int geneID, int geneValue) {
+    genes[geneID] = geneValue;
     // If a gene has been updated or set its fitness scores must be restarted
-    fitness.clear();
+    fitness = Integer.MAX_VALUE;
   }
 
-  /**
-   * Get the fitness achieved for the given branch
-   * @param branchIndex
-   * @return
-   */
-  protected Integer getBranchFitness(int branchIndex) {
-    return fitness.get(branchIndex);
-  }
-
-  /**
-   * Not sure if we're going to need this but put it in anyways
-   *    it's possible that population might deal with this or at a higher level
-   * - Gets sets the individuals fitness for a specified branch with given score
-   * @param branchIndex
-   * @param fitnessScore
-   */
-  protected void setSingleFitness(int branchIndex, Integer fitnessScore) {
-    fitness.put(branchIndex, fitnessScore);
+  public int getFitness() {
+    if (fitness == Integer.MAX_VALUE) fitness = Host.getFitness(this);
+    return fitness;
   }
 
   /**
    * For debugging more than anything
-   * @return
+   * @return The individual as a string
    */
   @Override
   public String toString() {
-    return ("Input Params: " + genes + " | Fitness: " + fitness);
+    String[] genesString = Arrays.stream(genes)
+            .mapToObj(String::valueOf)
+            .toArray(String[]::new);
+    return ("Input Params: " + Arrays.toString(genesString) + " | Fitness: " + fitness);
   }
 
 
