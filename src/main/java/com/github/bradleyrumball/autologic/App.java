@@ -87,20 +87,22 @@ public class App {
 
   public static void main(String[] args) throws IOException {
 
-    CompilationUnit cu = getCU("src/main/resources/classundertest/FizzBuzz.java");
+    CompilationUnit cu = getCU("src/main/resources/classundertest/BMICalculator.java");
     Decomposer d = new Decomposer(cu);
     cu = LogInjector.injectMethodAllBranches(cu);
-    Path output = Paths.get("src", "main", "resources", "injectorOutput", "FizzBuzz.java");
-    Files.write(output, cu.toString().getBytes());
+
+    System.out.println(cu);
+    //Path output = Paths.get("src", "main", "resources", "injectorOutput", "Triangle.java");
+    //Files.write(output, cu.toString().getBytes());
     //LogInjector.injectMethodAllBranches(cu);
 //    System.out.println(d.getMethod().get(0).getParameters());
 //    System.out.println(d.getParams().get(0));
 //    InfectionTemplate template = new InfectionTemplate(d.getParams());
 
 
-    Expression e = d.getIfPredicates().get(0).get(0);
-    BinaryExpr ue = e.asBinaryExpr();
-    System.out.println(ue.getOperator());
+//    Expression e = d.getIfPredicates().get(0).get(0);
+//    BinaryExpr ue = e.asBinaryExpr();
+//    System.out.println(ue.getOperator());
 
 
   }

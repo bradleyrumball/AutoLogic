@@ -30,50 +30,21 @@ public class CustomVisitor extends ModifierVisitor<Void> {
     @Override
     public IfStmt visit(IfStmt n, Void arg) {
         BinaryExpr expression = n.getCondition().asBinaryExpr();
-        // logging injection for if statement
-        String insert = "log(" + idCounter + "," + expression.getLeft().toString()
-                + "," + expression.getRight().toString() + ",Operator." + expression.getOperator().name() + ");";
-        Statement statement = StaticJavaParser.parseStatement(insert);
-        idCounter++;
-        // If has brackets, just add new line
 
-        if(n.getThenStmt().isBlockStmt()) {
-            BlockStmt then = n.getThenStmt().asBlockStmt();
-            then.getStatements().add(0, statement);
-            // Adds to end but not end of if block
-            //then.getStatements().addLast(statement);
-            // Need to add else statement AFTER the entire block statement
-            //then.getStatements().addAfter();
-        } else {
-            //If inline or no brackets, make block statement
-            ExpressionStmt then = n.getThenStmt().asExpressionStmt();
-            BlockStmt block = new BlockStmt();
-            block.addStatement(statement);
-            block.addStatement(then);
-            n.setThenStmt(block);
-        }
+        n.setCondition(ifLogStatement(expression));
 
         // For else statements ...
         n.getElseStmt().ifPresent(stmt -> {
             if(stmt.isBlockStmt()) {
                 BlockStmt elseBlock = stmt.asBlockStmt();
-                BinaryExpr elseExpression = invertExpression(expression);
-                String insertElse = "log(" + idCounter + "," + elseExpression.getLeft().toString()
-                        + "," + elseExpression.getRight().toString() + ",Operator." + elseExpression.getOperator().name() + ");";
-                Statement statementElse = StaticJavaParser.parseStatement(insertElse);
-                idCounter++;
-                elseBlock.getStatements().add(0, statementElse);
+
+                elseBlock.getStatements().add(0, elseLogStatement(expression));
             // If inline
             } else if(!stmt.isIfStmt()) {
                 BlockStmt elseBlock = new BlockStmt();
                 n.setElseStmt(elseBlock);
                 elseBlock.addStatement(stmt);
-                BinaryExpr elseExpression = invertExpression(expression);
-                String insertElse = "log(" + idCounter + "," + elseExpression.getLeft().toString()
-                        + "," + elseExpression.getRight().toString() + ",Operator." + elseExpression.getOperator().name() + ");";
-                Statement statementElse = StaticJavaParser.parseStatement(insertElse);
-                idCounter++;
-                elseBlock.getStatements().add(0, statementElse);
+                elseBlock.getStatements().add(0, elseLogStatement(expression));
             }
         });
 
@@ -95,6 +66,29 @@ public class CustomVisitor extends ModifierVisitor<Void> {
         return n;
     }
 
+    public Expression ifLogStatement (BinaryExpr e) {
+        if (e.getOperator() == BinaryExpr.Operator.AND || e.getOperator() == BinaryExpr.Operator.OR) {
+            e.setLeft(ifLogStatement(e.getLeft().asBinaryExpr()));
+            e.setRight(ifLogStatement(e.getRight().asBinaryExpr()));
+            return e;
+        } else {
+            String insert = "log(" + idCounter + "," + e.getLeft().toString()
+                    + "," + e.getRight().toString() + ",Operator." + e.getOperator().name() + ")";
+            Expression expressionIfStatement = StaticJavaParser.parseExpression(insert);
+            idCounter++;
+            return expressionIfStatement;
+        }
+    }
+
+    public Statement elseLogStatement (BinaryExpr e) {
+            BinaryExpr elseExpression = invertExpression(e);
+            String insertElse = "log(" + idCounter + "," + elseExpression.getLeft().toString()
+                    + "," + elseExpression.getRight().toString() + ",Operator." + elseExpression.getOperator().name() + ");";
+            Statement statementElse = StaticJavaParser.parseStatement(insertElse);
+            idCounter++;
+            return statementElse;
+    }
+
     /***
      * Helper function to invert operators - mainly used for else statements
      *
@@ -110,7 +104,31 @@ public class CustomVisitor extends ModifierVisitor<Void> {
             case GREATER_EQUALS: operator = BinaryExpr.Operator.LESS; break;
             case LESS: operator = BinaryExpr.Operator.GREATER_EQUALS; break;
             case LESS_EQUALS: operator = BinaryExpr.Operator.GREATER; break;
+            case AND:
+            case OR:
+                return deMorgan(e);
         }
         return new BinaryExpr(e.getLeft(), e.getRight(), operator);
+    }
+
+    public BinaryExpr deMorgan(BinaryExpr expression) {
+        switch (expression.getOperator()){
+            case AND: expression.setOperator(BinaryExpr.Operator.OR); break;
+            case OR: expression.setOperator(BinaryExpr.Operator.AND); break;
+        }
+
+        if (expression.getLeft().isBinaryExpr()) {
+            expression.setLeft(deMorgan(expression.getLeft().asBinaryExpr()));
+        } else {
+            expression.setLeft(new UnaryExpr(expression.getLeft(), UnaryExpr.Operator.LOGICAL_COMPLEMENT));
+        }
+
+        if (expression.getRight().isBinaryExpr()) {
+            expression.setRight(deMorgan(expression.getRight().asBinaryExpr()));
+        } else {
+            expression.setRight(new UnaryExpr(expression.getRight(), UnaryExpr.Operator.LOGICAL_COMPLEMENT));
+        }
+
+        return expression;
     }
 }
