@@ -3,8 +3,8 @@ package com.github.bradleyrumball.autologic.GA;
 import com.github.bradleyrumball.autologic.Triangle;
 import com.github.javaparser.ast.expr.BinaryExpr;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Host {
     private static final int NUMBER_OF_BRANCHES = 14;
@@ -12,9 +12,10 @@ public class Host {
     private static int currentBranch;
     private static int currentFitness;
 
-    private static final double mutationRate = 0.025;
-    private static final int tournamentSize = 5;
-    private static final boolean elitism = true;
+    private static final double MUTATION_RATE = 0.4;//0.025;
+    private static final double CROSSOVER_BIAS = 0.5;
+    private static final int TOURNAMENT_SIZE = 15;
+    private static final boolean ELITISM = true;
 
 
     public static void main (String[] args) {
@@ -25,11 +26,11 @@ public class Host {
         for (int i = 0; i < NUMBER_OF_BRANCHES; i++) {
             currentBranch = i;
 
-            Population population = new Population(10); //50
+            Population population = new Population(50); //50
             int generation = 1;
             int populationFitness = population.getFittest().getFitness();
             while (populationFitness > 0) {
-                System.out.println("Generation: " + generation + " Current fitness: " + populationFitness);
+//                System.out.println("Generation: " + generation + " Current fitness: " + populationFitness);
                 population = evolvePopulation(population);
                 generation++;
                 populationFitness = population.getFittest().getFitness();
@@ -45,7 +46,7 @@ public class Host {
         Population newPopulation = new Population();
 
         int elitismOffset = 0;
-        if (elitism) {
+        if (ELITISM) {
             newPopulation.addIndividual(population.getFittest());
             elitismOffset = 1;
         }
@@ -65,7 +66,7 @@ public class Host {
 
     private static Individual tournament(Population population) {
         Population tournament = new Population(0);
-        for (int i = 0; i < tournamentSize; i++) {
+        for (int i = 0; i < TOURNAMENT_SIZE; i++) {
             int randomIndividual = (int) (Math.random() * population.getIndividuals().size());
             tournament.addIndividual(population.getIndividual(randomIndividual));
         }
@@ -74,24 +75,34 @@ public class Host {
     }
 
     private static Individual crossover(Individual individualA, Individual individualB) {
-        final double crossoverBias = 0.5;
         Individual cross = new Individual();
         for (int i = 0; i < cross.getGeneCount(); i++) {
-            if(Math.random() <= crossoverBias) cross.setGene(i, individualA.getGene(i));
+            if(Math.random() <= CROSSOVER_BIAS) cross.setGene(i, individualA.getGene(i));
             else cross.setGene(i, individualB.getGene(i));
         }
         return cross;
     }
 
     private static void mutate(Individual individual) {
+        int explorationAmount = 1;
+        if (individual.getFitness() > 10000) explorationAmount = 500;
+        if (individual.getFitness() > 1000) explorationAmount = 50;
+        if (individual.getFitness() > 10) explorationAmount = 5;
         for (int i = 0; i < individual.getGeneCount(); i++) {
-            if(Math.random() <= mutationRate) individual.setGene(i, new Random().nextInt());
+            if(Math.random() <= MUTATION_RATE) {
+                double rand = Math.random();
+                if(rand <= 0.33) individual.setGene(i, individual.getGene(i)+explorationAmount);
+                else if(rand <= 0.66) individual.setGene(i, individual.getGene(i)-explorationAmount);
+                else individual.setGene(i, new SecureRandom().nextInt());
+            }
+
         }
     }
 
     protected static int getFitness(Individual individual) {
         currentFitness = Integer.MAX_VALUE;
         instrumentedClassify(individual.getGene(0), individual.getGene(1), individual.getGene(2));
+
         return currentFitness;
     }
 
@@ -115,10 +126,11 @@ public class Host {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        System.out.println("id: "+id+", left: "+left+", right: "+right+", OP: "+operator+", Fit:"+fScore);
 
-        if(id==currentBranch) currentFitness = fScore;
-
+        if(id==currentBranch) {
+            currentFitness = fScore;
+            System.out.println("id: "+id+", left: "+left+", right: "+right+", OP: "+operator+", Fit:"+currentFitness);
+        }
         // to continue with execution
         return fScore == 0;
     }

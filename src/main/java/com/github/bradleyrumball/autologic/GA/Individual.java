@@ -1,8 +1,8 @@
 package com.github.bradleyrumball.autologic.GA;
 
 
+import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Random;
 
 public class Individual {
 
@@ -30,7 +30,7 @@ public class Individual {
    * Constructor, creates individual with random genes (params)
    */
   public Individual() {
-    for (int i = 0; i < genes.length; i++) genes[i] = new Random().nextInt();
+    for (int i = 0; i < genes.length; i++) genes[i] = new SecureRandom().nextInt();
   }
 
   /**

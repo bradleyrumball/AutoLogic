@@ -26,6 +26,7 @@ public class Population {
     this(0);
   }
 
+
   protected ArrayList<Individual> getIndividuals() {
     return individuals;
   }
