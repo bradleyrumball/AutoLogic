@@ -1,14 +1,37 @@
-package com.github.bradleyrumball.autologic;
+package com.github.bradleyrumball.autologic.GA;
 
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
 
+/**
+ * Class to calculate the fitness of a logical condition
+ * Fitness guides to how far/close a condition is to being satisfied
+ */
 public class Fitness {
 
-  private int left;
-  private int right;
-  private Operator operator;
-  private int K;
+  /**
+   * Left argument to a condition
+   */
+  private final int left;
+  /**
+   * Right argument to a condition
+   */
+  private final int right;
+  /**
+   * The operator of a conditional expression
+   */
+  private final Operator operator;
+  /**
+   * A constant to give fitness a nudge in the right direction
+   */
+  private final int K;
 
+  /**
+   * Main constructor allows all inputs plus a custom K value (not used by this application)
+   * @param left left side of condition
+   * @param right right side of condition
+   * @param operator operator of condition
+   * @param K A small positive value
+   */
   public Fitness (int left, int right, Operator operator, int K) {
     this.left = left;
     this.right = right;
@@ -16,6 +39,12 @@ public class Fitness {
     this.K = K;
   }
 
+  /**
+   * Primary constructor, sets k as 1.
+   * @param left left side of condition
+   * @param right right side of condition
+   * @param operator operator of condition
+   */
   public Fitness (int left, int right , Operator operator) {
     this(left, right, operator, 1);
   }
@@ -80,6 +109,11 @@ public class Fitness {
     else return score + K;
   }
 
+  /**
+   * Public method to get the fitness of an instance
+   * @return int - the fitness of the condition provided to the instance
+   * @throws Exception Annoying exception because I used a switch statement
+   */
   public int getFitness() throws Exception {
     switch(operator) {
       case EQUALS: return equal();
