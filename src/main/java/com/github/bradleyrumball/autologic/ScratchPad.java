@@ -66,6 +66,7 @@ public class ScratchPad {
       int fScore = f.getFitness();
       System.out.println("id: "+id+", left: "+left+", right: "+right+", OP: "+op+", Fit:"+fScore);
 
+      // Hit on each branch, not only when branch is covered
       if (!coveredBranches.containsKey(id)) coveredBranches.put(id, fScore);
       else if(coveredBranches.get(id) > fScore) coveredBranches.replace(id, fScore);
 

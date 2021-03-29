@@ -1,5 +1,6 @@
 package com.github.bradleyrumball.autologic;
 
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.expr.BinaryExpr;
@@ -9,6 +10,10 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -23,6 +28,11 @@ public class App {
    */
   public static CompilationUnit getCU(String path) throws FileNotFoundException {
     File f = new File(path);
+    //Paths.get(x)
+    //Move all this
+    ParserConfiguration parserConfiguration = new ParserConfiguration()
+            .setAttributeComments(false);
+    StaticJavaParser.setConfiguration(parserConfiguration);
     return StaticJavaParser.parse(f);
   }
 
@@ -75,11 +85,14 @@ public class App {
     return classConditions;
   }
 
-  public static void main(String[] args) throws FileNotFoundException {
+  public static void main(String[] args) throws IOException {
 
-    CompilationUnit cu = getCU("src/main/resources/classundertest/Triangle.java");
+    CompilationUnit cu = getCU("src/main/resources/classundertest/FizzBuzz.java");
     Decomposer d = new Decomposer(cu);
-    System.out.println(LogInjector.injectMethodAllBranches(cu));
+    cu = LogInjector.injectMethodAllBranches(cu);
+    Path output = Paths.get("src", "main", "resources", "injectorOutput", "FizzBuzz.java");
+    Files.write(output, cu.toString().getBytes());
+    //LogInjector.injectMethodAllBranches(cu);
 //    System.out.println(d.getMethod().get(0).getParameters());
 //    System.out.println(d.getParams().get(0));
 //    InfectionTemplate template = new InfectionTemplate(d.getParams());
