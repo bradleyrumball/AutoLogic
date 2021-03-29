@@ -87,7 +87,7 @@ public class App {
 
   public static void main(String[] args) throws IOException {
 
-    CompilationUnit cu = getCU("src/main/resources/classundertest/BMICalculator.java");
+    CompilationUnit cu = getCU("src/main/resources/classundertest/Triangle.java");
     Decomposer d = new Decomposer(cu);
     cu = LogInjector.injectMethodAllBranches(cu);
 

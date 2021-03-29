@@ -33,6 +33,8 @@ public class CustomVisitor extends ModifierVisitor<Void> {
 
         n.setCondition(ifLogStatement(expression));
 
+
+
         // For else statements ...
         n.getElseStmt().ifPresent(stmt -> {
             if(stmt.isBlockStmt()) {
@@ -51,12 +53,7 @@ public class CustomVisitor extends ModifierVisitor<Void> {
         // Adds else statement after a single if for alternate branch
         if(!n.hasElseBranch() && !n.hasElseBlock()) {
             BlockStmt block = new BlockStmt();
-            BinaryExpr elseExpression = invertExpression(expression);
-            String insertElse = "log(" + idCounter + "," + elseExpression.getLeft().toString()
-                    + "," + elseExpression.getRight().toString() + ",Operator." + elseExpression.getOperator().name() + ");";
-            Statement statementElse = StaticJavaParser.parseStatement(insertElse);
-            idCounter++;
-            block.getStatements().add(statementElse);
+            block.getStatements().add(elseLogStatement(expression));
             n.setElseStmt(block);
         }
 
