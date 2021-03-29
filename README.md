@@ -1,6 +1,6 @@
 ![img](https://lumcdn.ams3.cdn.digitaloceanspaces.com/Bradley/Artboard%201.png)
 
-# AutoLogic [![Build Status](https://travis-ci.org/bradleyrumball/AutoLogic.png?branch=master)](https://travis-ci.org/bradleyrumball/AutoLogic)
+# AutoLogic [![Build Status](https://travis-ci.com/bradleyrumball/AutoLogic.svg?token=bHNU4yeXhHmC2AyddcFV&branch=main)](https://travis-ci.com/bradleyrumball/AutoLogic)
 Automated Tool Support for Logic Coverage of Java Code
 
 Team:
