@@ -10,6 +10,27 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ *
+ * THIS CLASS IS A SCRATCH PAD ONLY
+ * GA class is based in com.github.bradleyrumball.autologic.GA.Host
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+@Deprecated
 public class ScratchPad {
 
   static final int ITERATIONS = 10000;
@@ -23,6 +44,7 @@ public class ScratchPad {
   private static HashMap<Integer, Integer> coveredBranches = new HashMap<>();
   private static ArrayList<ArrayList> testVals = new ArrayList();
 
+  @Deprecated
   public static void main(String[] args) throws Exception {
 //    Three lines below are to test out population generation
     Population p = new Population(10);
@@ -31,6 +53,7 @@ public class ScratchPad {
 //    randomlyTestClassify();
   }
 
+  @Deprecated
   static void randomlyTestClassify() throws Exception {
     Random r = new Random();
 
@@ -55,6 +78,7 @@ public class ScratchPad {
     System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
   }
 
+  @Deprecated
   static int randomInt(Random r) {
     if (MIN_INT == Integer.MIN_VALUE && MAX_INT == Integer.MAX_VALUE) {
       return r.nextInt();
@@ -63,6 +87,7 @@ public class ScratchPad {
     }
   }
 
+  @Deprecated
   static void coveredBranch(int id) {
     if (!coveredBranches.containsKey(id)) {
       System.out.println("* covered new branch: " + id);
@@ -70,6 +95,7 @@ public class ScratchPad {
     }
   }
 
+  @Deprecated
   static boolean log(int id, int left, int right, Operator op) throws Exception {
       Fitness f = new Fitness(left, right, op);
       int fScore = f.getFitness();
@@ -83,6 +109,7 @@ public class ScratchPad {
       return (fScore == 0) ? true : false;
   }
 
+  @Deprecated
   static Type instrumentedClassify (int side1, int side2, int side3) throws Exception {
     Type type;
 

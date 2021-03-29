@@ -6,23 +6,51 @@ import com.github.javaparser.ast.expr.BinaryExpr;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 
+/**
+ * Controls the main execution of the GA
+ */
 public class Host {
+    /**
+     * Temp
+     * This is the number of branches that can possibly execute in the method under test
+     * This should be calculated when the method is parsed and instrumented
+     */
     private static final int NUMBER_OF_BRANCHES = 14;
 
+    /**
+     * The current branch that the GA is attempting to obtain solutions for
+     */
     private static int currentBranch;
+    /**
+     * The fitness of an individual that has been run
+     * This value is used as a handler between log, getFitness and handing back to the individual class
+     */
     private static int currentFitness;
 
-    private static final double MUTATION_RATE = 0.4;//0.025;
+    /**
+     * The rate (0->1) that we which to mutate individuals in the population at
+     */
+    private static final double MUTATION_RATE = 0.4;
+    /**
+     * The crossover bias between geners of an individual A and an individual B
+     */
     private static final double CROSSOVER_BIAS = 0.5;
+    /**
+     * The size of the tournament (number of fittest individuals to obtain from the previous population)
+     */
     private static final int TOURNAMENT_SIZE = 15;
+    /**
+     * Enables Elitism, without this we might not be able to achieve optimum fitness although it can put
+     * us in local minima
+     */
     private static final boolean ELITISM = true;
 
-
+    /**
+     * Runs the GA - probably should be abstracted to another class
+     * @param args program args
+     */
     public static void main (String[] args) {
-        // Init coverage to max int
-//        for (int i = 0; i < NUMBER_OF_BRANCHES; i++) coveredBranches[NUMBER_OF_BRANCHES] = Integer.MAX_VALUE;
-
-        ArrayList<int[]> solutions = new ArrayList<>();
+        ArrayList<Individual> solutions = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_BRANCHES; i++) {
             currentBranch = i;
 
@@ -36,21 +64,28 @@ public class Host {
                 populationFitness = population.getFittest().getFitness();
             }
             System.out.println("Solution for branch " + currentBranch + " has been found");
-            solutions.add(i, population.getFittest().getGenes());
+            solutions.add(i, population.getFittest());
         }
         System.out.println("Solutions found for all");
         System.out.println(solutions.toString());
     }
 
+    /**
+     * Once a population has been evaluated we evolve it by crossover and mutation
+     * @param population the population that has just been tested for fitness
+     * @return population - a new population that contains hopefully better individuals
+     */
     public static Population evolvePopulation(Population population) {
         Population newPopulation = new Population();
 
+        // Elitism - Get best individual
         int elitismOffset = 0;
         if (ELITISM) {
             newPopulation.addIndividual(population.getFittest());
             elitismOffset = 1;
         }
 
+        // Crossover - get best x individuals and cross them
         for (int i = elitismOffset; i < population.getIndividuals().size(); i++) {
             Individual tournamentWinner1 = tournament(population);
             Individual tournamentWinner2 = tournament(population);
@@ -58,12 +93,18 @@ public class Host {
             newPopulation.addIndividual(crossoverIndividual);
         }
 
+        // Mutation - adjust genetics by manipulating their values
         for (int i = elitismOffset; i < newPopulation.getIndividuals().size(); i++) {
             mutate(newPopulation.getIndividual(i));
         }
         return newPopulation;
     }
 
+    /**
+     * Returns the fittest individual from a random portion of the population
+     * @param population the population that had just been run
+     * @return Individual - the best individual from a random proportion of the population
+     */
     private static Individual tournament(Population population) {
         Population tournament = new Population(0);
         for (int i = 0; i < TOURNAMENT_SIZE; i++) {
@@ -71,9 +112,16 @@ public class Host {
             tournament.addIndividual(population.getIndividual(randomIndividual));
         }
         return tournament.getFittest();
-
     }
 
+    /**
+     * Crosses over individuals by producing an individual from a mixture of genes
+     * from two parent individuals. This is done on a gene by gene (parameter by parameter basis)
+     * Crossover bias can manipulate the breeding process
+     * @param individualA parent A of the new individual
+     * @param individualB parent B of the new individual
+     * @return a child of A and B
+     */
     private static Individual crossover(Individual individualA, Individual individualB) {
         Individual cross = new Individual();
         for (int i = 0; i < cross.getGeneCount(); i++) {
@@ -83,6 +131,17 @@ public class Host {
         return cross;
     }
 
+    /**
+     * This is where most success of the GA comes in
+     * There is a 33% chance that an individual will be
+     * -incremented by a dynamic amount
+     * -decremented by a dyncmic amount
+     * -replaced by a new random value
+     *
+     * When incrementing and decrementing, the amount to manipulate the value by is dependant on
+     * how far the value is from its optimum fitness
+     * @param individual the individual to mutate
+     */
     private static void mutate(Individual individual) {
         int explorationAmount = 1;
         if (individual.getFitness() > 10000) explorationAmount = 500;
@@ -99,16 +158,18 @@ public class Host {
         }
     }
 
+    /**
+     * Called by the Individual class the run its gene pool on the instrumented class
+     * returns the fitness produced by the individual
+     * @param individual the individual to test the class with
+     * @return fitness of individual
+     */
     protected static int getFitness(Individual individual) {
         currentFitness = Integer.MAX_VALUE;
         instrumentedClassify(individual.getGene(0), individual.getGene(1), individual.getGene(2));
 
         return currentFitness;
     }
-
-
-
-    //-------------------------------------------------------------------
 
     /**
      * Logging method from instrumented class
@@ -127,9 +188,10 @@ public class Host {
             e.printStackTrace();
         }
 
+        // We only set set the fitness value if the current branch is the one we are testing
         if(id==currentBranch) {
             currentFitness = fScore;
-            System.out.println("id: "+id+", left: "+left+", right: "+right+", OP: "+operator+", Fit:"+currentFitness);
+//            System.out.println("id: "+id+", left: "+left+", right: "+right+", OP: "+operator+", Fit:"+currentFitness);
         }
         // to continue with execution
         return fScore == 0;
@@ -146,62 +208,47 @@ public class Host {
     private static Triangle.Type instrumentedClassify (int side1, int side2, int side3) {
         Triangle.Type type;
 
-
         if (log(0, side1, side2, BinaryExpr.Operator.GREATER)) {
-//      coveredBranch(1, coveredBranches);
             int temp = side1;
             side1 = side2;
             side2 = temp;
         } else {
             log(1, side1, side2, BinaryExpr.Operator.LESS_EQUALS);
-//      coveredBranch(2, coveredBranches);
         }
 
         if (log(2,side1, side3, BinaryExpr.Operator.GREATER)) {
-//      coveredBranch(3, coveredBranches);
             int temp = side1;
             side1 = side3;
             side3 = temp;
         } else {
             log(3,side1, side3, BinaryExpr.Operator.LESS_EQUALS);
-//      coveredBranch(4, coveredBranches);
         }
 
         if (log(4, side2, side3, BinaryExpr.Operator.GREATER)) {
-//      coveredBranch(5, coveredBranches);
             int temp = side2;
             side2 = side3;
             side3 = temp;
         } else {
             log(5, side2, side3, BinaryExpr.Operator.LESS_EQUALS);
-//      coveredBranch(6, coveredBranches);
         }
 
         if (log(6, side1 + side2, side3, BinaryExpr.Operator.LESS_EQUALS)) {
-//      coveredBranch(7, coveredBranches);
             type = Triangle.Type.INVALID;
         } else {
             log(7, side1 + side2, side3, BinaryExpr.Operator.GREATER);
-//      coveredBranch(8, coveredBranches);
             type = Triangle.Type.SCALENE;
             if (log(8, side1, side2, BinaryExpr.Operator.EQUALS)) {
-//        coveredBranch(9, coveredBranches);
                 if (log(12, side2, side3, BinaryExpr.Operator.EQUALS)) {
-//          coveredBranch(10, coveredBranches);
                     type = Triangle.Type.EQUILATERAL;
                 } else {
                     log(13, side2, side3, BinaryExpr.Operator.NOT_EQUALS);
-//          coveredBranch(11, coveredBranches);
                 }
             } else {
                 log(9, side1, side2, BinaryExpr.Operator.NOT_EQUALS);
-//        coveredBranch(12, coveredBranches);
                 if (log(10, side2, side3, BinaryExpr.Operator.EQUALS)) {
-//          coveredBranch(13, coveredBranches);
                     type = Triangle.Type.ISOSCELES;
                 } else {
                     log(11, side2, side3, BinaryExpr.Operator.NOT_EQUALS);
-//          coveredBranch(14, coveredBranches);
                 }
             }
         }

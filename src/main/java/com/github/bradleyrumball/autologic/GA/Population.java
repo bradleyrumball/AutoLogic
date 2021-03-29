@@ -20,17 +20,27 @@ public class Population {
   }
 
   /**
-   * Constructor for when we cant to create an empty population
+   * Constructor for when we want to create an empty population
+   * This is used for new populations that are constructed manually
+   * from mutation and crossover etc
    */
   public Population() {
     this(0);
   }
 
-
+  /**
+   * Getter for all individuals in the population
+   * @return a list of all individuals in the populaiton
+   */
   protected ArrayList<Individual> getIndividuals() {
     return individuals;
   }
 
+  /**
+   * Add an individual to the population
+   * used by the crossover and mutate methods
+   * @param individual the individual to add to the population
+   */
   protected void addIndividual(Individual individual){
     individuals.add(individual);
   }
@@ -45,7 +55,7 @@ public class Population {
   }
 
   /**
-   * Get the fittest individuals for each branch
+   * Get the fittest individual in the population
    * @return the individual with the best (lowest) fitness
    */
   protected Individual getFittest() {

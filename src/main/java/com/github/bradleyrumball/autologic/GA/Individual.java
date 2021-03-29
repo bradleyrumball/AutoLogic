@@ -4,6 +4,11 @@ package com.github.bradleyrumball.autologic.GA;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
+/**
+ * This class contains a instance of an individual
+ * an individual has its own gene pool which is tested for fitness.
+ * Individuals form a population.
+ */
 public class Individual {
 
   /**
@@ -15,7 +20,6 @@ public class Individual {
 
   /**
    * Genes represent the parameters that are going into the method
-   * Initial capacity set to the number of params
    */
   private final int[] genes = new int[NUMBER_OF_GENES];
 
@@ -23,14 +27,18 @@ public class Individual {
    * The current fitness of the individual
    *
    * Worst fitness is determined as Integer.Max
+   * Ideal fitness is 0
    */
   private int fitness = Integer.MAX_VALUE;
 
   /**
-   * Constructor, creates individual with random genes (params)
+   * Constructor, individuals are created with their initial gene pool set
+   * such that all genes are equal, this is because it is time consuming for
+   * the GA to create a case where multiple parameters are equal
    */
   public Individual() {
-    for (int i = 0; i < genes.length; i++) genes[i] = new SecureRandom().nextInt();
+    int starter = new SecureRandom().nextInt();
+    for (int i = 0; i < genes.length; i++) genes[i] = starter;
   }
 
   /**
@@ -42,17 +50,17 @@ public class Individual {
     return genes[id];
   }
 
-  protected int[] getGenes() {
-    return genes;
-  }
-
+  /**
+   * Return the number of genes that each individual carries
+   * @return
+   */
   protected int getGeneCount() {
     return NUMBER_OF_GENES;
   }
 
   /**
    * Allows a gene to be set individually
-   * Can be used by crossover for example
+   * Can be used by crossover/mutate for example
    * @param geneID The ID of the gene that you wish to set
    * @param geneValue The value that you wish to set the gene to
    */
@@ -62,6 +70,11 @@ public class Individual {
     fitness = Integer.MAX_VALUE;
   }
 
+  /**
+   * Call back to host to get the fitness of the current individual if it hasn't already been
+   * calculated.
+   * @return int - fitness value of the individual
+   */
   public int getFitness() {
     if (fitness == Integer.MAX_VALUE) fitness = Host.getFitness(this);
     return fitness;
@@ -76,7 +89,7 @@ public class Individual {
     String[] genesString = Arrays.stream(genes)
             .mapToObj(String::valueOf)
             .toArray(String[]::new);
-    return ("Input Params: " + Arrays.toString(genesString) + " | Fitness: " + fitness);
+    return ("Input Params: " + Arrays.toString(genesString) + " | Fitness: " + fitness+"\n");
   }
 
 
