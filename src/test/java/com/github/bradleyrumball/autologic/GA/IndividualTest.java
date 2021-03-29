@@ -4,23 +4,42 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class IndividualTest {
 
-  private Individual i;
+  private Individual individual;
 
   @Before
-  public void setUp() throws Exception {
-    i = new Individual();
+  public void setUp() {
+    individual = new Individual();
   }
 
   /**
-   * Checks that fitness has been set back to 0
+   * Check genes are equal on new individuals
+   */
+  @Test
+  public void newIndividualGenesAreEqual() {
+    int numberOfGenes = individual.getGeneCount();
+    int expectedGene = individual.getGene(0);
+    boolean genesEqual = true;
+    for (int i = 0; i < numberOfGenes; i++) {
+      if (individual.getGene(i) != expectedGene) genesEqual = false;
+    }
+    assertEquals(true, genesEqual);
+  }
+
+
+
+  /**
+   * Checks that fitness has been reset
+   * should return a new fitness score
    */
   @Test
   public void setGene() {
-    i.setGene(0, 1);
-    int newFitness = i.getFitness();
-    assertEquals(Integer.MAX_VALUE, newFitness);
+    int oldFitness = individual.getFitness();
+    individual.setGene(0, 1);
+    int newFitness = individual.getFitness();
+    assertNotEquals(oldFitness, newFitness);
   }
 }
