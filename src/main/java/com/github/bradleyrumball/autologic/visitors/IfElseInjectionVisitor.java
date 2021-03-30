@@ -1,24 +1,17 @@
-package com.github.bradleyrumball.autologic;
+package com.github.bradleyrumball.autologic.visitors;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.comments.BlockComment;
-import com.github.javaparser.ast.comments.Comment;
-import com.github.javaparser.ast.comments.JavadocComment;
-import com.github.javaparser.ast.comments.LineComment;
-import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
-import com.github.javaparser.ast.visitor.Visitable;
 
-import java.util.NoSuchElementException;
+public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
 
-public class CustomVisitor extends ModifierVisitor<Void> {
-
-    private int idCounter = 1;
+    private int idCounter = 0;
 
     /***
      * Injects CU with log statements.
@@ -61,6 +54,10 @@ public class CustomVisitor extends ModifierVisitor<Void> {
         super.visit(n, arg);
         //System.out.println(n);
         return n;
+    }
+
+    public int getIdCounter() {
+        return idCounter;
     }
 
     public Expression ifLogStatement (BinaryExpr e) {

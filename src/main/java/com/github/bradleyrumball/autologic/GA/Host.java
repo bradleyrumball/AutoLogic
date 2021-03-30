@@ -18,6 +18,11 @@ public class Host {
     private static final int NUMBER_OF_BRANCHES = 14;
 
     /**
+     * Number of params for the method (For triangle this is three (Side1, Side2, Side3)
+     */
+    public static final int NUMBER_OF_GENES = 3;
+
+    /**
      * The current branch that the GA is attempting to obtain solutions for
      */
     private static int currentBranch;
@@ -166,7 +171,7 @@ public class Host {
      */
     protected static int getFitness(Individual individual) {
         currentFitness = Integer.MAX_VALUE;
-        instrumentedClassify(individual.getGene(0), individual.getGene(1), individual.getGene(2));
+        instrumentedMethod(individual.getGene(0), individual.getGene(1), individual.getGene(2));
 
         return currentFitness;
     }
@@ -205,7 +210,7 @@ public class Host {
      * @return triangle type
 
      */
-    private static Triangle.Type instrumentedClassify (int side1, int side2, int side3) {
+    private static Triangle.Type instrumentedMethod(int side1, int side2, int side3) {
         Triangle.Type type;
 
         if (log(0, side1, side2, BinaryExpr.Operator.GREATER)) {

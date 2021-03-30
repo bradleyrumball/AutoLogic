@@ -1,4 +1,4 @@
-package com.github.bradleyrumball.autologic;
+package com.github.bradleyrumball.autologic.old_scratchpad;
 
 import com.github.bradleyrumball.autologic.GA.Fitness;
 import com.github.bradleyrumball.autologic.GA.Population;

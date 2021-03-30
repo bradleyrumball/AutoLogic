@@ -1,6 +1,8 @@
 package com.github.bradleyrumball.autologic;
 
+import javax.annotation.Resource;
 
+@Resource
 public class Triangle {
 
     public enum Type {
