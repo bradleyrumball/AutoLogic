@@ -30,7 +30,7 @@ public class App {
 
 
   public static void main(String[] args) throws IOException {
-    CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/Triangle.java");
+    CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/BMICalculator.java");
 
     classUnderTest = LoggingInjector.injectMethodAllBranches(classUnderTest);
 
