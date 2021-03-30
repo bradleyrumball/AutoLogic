@@ -1,4 +1,4 @@
-package com.github.bradleyrumball.autologic;
+package com.github.bradleyrumball.autologic.test_case_generation;
 
 import java.io.File;
 import java.io.IOException;

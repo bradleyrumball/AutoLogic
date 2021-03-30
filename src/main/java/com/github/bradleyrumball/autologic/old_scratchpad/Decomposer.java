@@ -1,4 +1,4 @@
-package com.github.bradleyrumball.autologic;
+package com.github.bradleyrumball.autologic.old_scratchpad;
 
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class Decomposer {
 
   private CompilationUnit cu;

@@ -1,6 +1,5 @@
 package com.github.bradleyrumball.autologic;
 
-
 public class Triangle {
 
     public enum Type {

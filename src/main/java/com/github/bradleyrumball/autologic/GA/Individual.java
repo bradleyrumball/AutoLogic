@@ -11,17 +11,13 @@ import java.util.Arrays;
  */
 public class Individual {
 
-  /**
-   * Temp?
-   * Number of params for the method (For triangle this is three (Side1, Side2, Side3)
-   */
-  private final int NUMBER_OF_GENES = 3;
+
 
 
   /**
    * Genes represent the parameters that are going into the method
    */
-  private final int[] genes = new int[NUMBER_OF_GENES];
+  private final int[] genes = new int[Host.NUMBER_OF_GENES];
 
   /**
    * The current fitness of the individual
@@ -55,7 +51,7 @@ public class Individual {
    * @return
    */
   protected int getGeneCount() {
-    return NUMBER_OF_GENES;
+    return Host.NUMBER_OF_GENES;
   }
 
   /**
