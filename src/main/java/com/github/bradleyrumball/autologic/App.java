@@ -1,6 +1,7 @@
 package com.github.bradleyrumball.autologic;
 
 import com.github.bradleyrumball.autologic.visitors.IfElseInjectionVisitor;
+import com.github.bradleyrumball.autologic.visitors.LoggingInjector;
 import com.github.bradleyrumball.autologic.visitors.ParameterVisitor;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
@@ -31,19 +32,22 @@ public class App {
   public static void main(String[] args) throws IOException {
     CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/Triangle.java");
 
+    classUnderTest = LoggingInjector.injectMethodAllBranches(classUnderTest);
+
+    System.out.println(classUnderTest);
     // inject CU with log statements on ifs
-    IfElseInjectionVisitor ifElseInjectionVisitor = new IfElseInjectionVisitor();
-    classUnderTest.accept(ifElseInjectionVisitor, null);
+    //IfElseInjectionVisitor ifElseInjectionVisitor = new IfElseInjectionVisitor();
+    //classUnderTest.accept(ifElseInjectionVisitor, null);
 
     // to be used as final static variable in Host
-    int numberOfBranches = ifElseInjectionVisitor.getIdCounter();
+    //int numberOfBranches = ifElseInjectionVisitor.getIdCounter();
 
-    ParameterVisitor parameterVisitor = new ParameterVisitor(classUnderTest);
+    //ParameterVisitor parameterVisitor = new ParameterVisitor(classUnderTest);
     // to be used as final static variable in Host
-    int numberOfParameters = parameterVisitor.getNumberOfParameters();
+    //int numberOfParameters = parameterVisitor.getNumberOfParameters();
 
     // Compilation unit of host
-    CompilationUnit host = getCU("src/main/java/com/github/bradleyrumball/autologic/GA/Host.java");
+    //CompilationUnit host = getCU("src/main/java/com/github/bradleyrumball/autologic/GA/Host.java");
 
     /*
     TODO: - inject classUnderTest into host
