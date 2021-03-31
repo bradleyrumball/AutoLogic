@@ -4,7 +4,6 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.UnaryExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
@@ -25,53 +24,50 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
      */
     @Override
     public IfStmt visit(IfStmt n, Void arg) {
-        BinaryExpr conditionExpression = n.getCondition().asBinaryExpr();
-        elseBuilder.add(conditionExpression.clone());
-        n.setCondition(ifLogStatement(conditionExpression));
+        Expression conditionExpression = n.getCondition();
+        if (conditionExpression.isBinaryExpr()) {
+            n.setCondition(ifLogStatement(conditionExpression.asBinaryExpr()));
+            elseBuilder.add(conditionExpression.asBinaryExpr().clone());
 
 
-        // For else statements ...
-        n.getElseStmt().ifPresent(stmt -> {
-            if(stmt.isBlockStmt()) {
-                BlockStmt elseBlock = stmt.asBlockStmt();
-                elseBlock.getStatements().add(0, buildElse());
-            // If inline
-            } else if(!stmt.isIfStmt()) {
-                BlockStmt elseBlock = new BlockStmt();
-                n.setElseStmt(elseBlock);
-                elseBlock.addStatement(stmt);
-                elseBlock.getStatements().add(0, buildElse());
+            // For else statements ...
+            n.getElseStmt().ifPresent(stmt -> {
+                if (stmt.isBlockStmt()) {
+                    IfStmt elif = new IfStmt().setCondition(buildElse());
+                    n.setElseStmt(elif);
+                    // If inline
+                } else if (!stmt.isIfStmt()) {
+                    IfStmt elif = new IfStmt().setCondition(buildElse());
+                    n.setElseStmt(elif);
+                }
+            });
+
+
+            // Adds else statement after a single if for alternate branch
+            if (!n.hasElseBranch() && !n.hasElseBlock()) {
+                IfStmt elif = new IfStmt().setCondition(buildElse());
+                n.setElseStmt(elif);
             }
-        });
 
 
-
-        // Adds else statement after a single if for alternate branch
-        if(!n.hasElseBranch() && !n.hasElseBlock()) {
-            BlockStmt block = new BlockStmt();
-            block.getStatements().add(buildElse());
-            n.setElseStmt(block);
         }
-
-
-
         // Recursion
         super.visit(n, arg);
 //        System.out.println(n);
         return n;
     }
 
-    protected Statement buildElse() {
-//        ArrayList<Expression> combined = new ArrayList<>();
+    protected Expression buildElse() {
+//        System.out.println("e:"+elseBuilder);
         String combined = "";
         for (int i = 0; i < elseBuilder.size(); i++) {
             combined += "(" + elseGenerator(elseBuilder.get(i)).toString() + ")";
             if (i != elseBuilder.size() - 1) combined += " && ";
         }
         Expression polishedElse = StaticJavaParser.parseExpression(combined);
-        System.out.println(polishedElse);
+//        System.out.println(polishedElse);
         elseBuilder.clear();
-        return null;
+        return polishedElse;
     }
 
     public int getIdCounter() {
@@ -79,7 +75,7 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
     }
 
     public Expression ifLogStatement (BinaryExpr e) {
-        if (e.getOperator() == BinaryExpr.Operator.AND || e.getOperator() == BinaryExpr.Operator.OR) {
+        if ((e.getOperator() == BinaryExpr.Operator.AND || e.getOperator() == BinaryExpr.Operator.OR) && (e.getLeft().isBinaryExpr() && e.getRight().isBinaryExpr())) {
             e.setLeft(ifLogStatement(e.getLeft().asBinaryExpr()));
             e.setRight(ifLogStatement(e.getRight().asBinaryExpr()));
             return e;
@@ -93,7 +89,7 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
     }
 
     public Expression elseGenerator (BinaryExpr e) {
-        if (e.getOperator() == BinaryExpr.Operator.AND || e.getOperator() == BinaryExpr.Operator.OR) {
+        if ((e.getOperator() == BinaryExpr.Operator.AND || e.getOperator() == BinaryExpr.Operator.OR) && (e.getLeft().isBinaryExpr() && e.getRight().isBinaryExpr())) {
             e.setLeft(elseGenerator(e.getLeft().asBinaryExpr()));
             e.setRight(elseGenerator(e.getRight().asBinaryExpr()));
             return invertExpression(e);

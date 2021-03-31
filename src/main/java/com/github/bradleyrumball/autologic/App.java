@@ -34,7 +34,7 @@ public class App {
     // inject CU with log statements on ifs
     IfElseInjectionVisitor ifElseInjectionVisitor = new IfElseInjectionVisitor();
     classUnderTest.accept(ifElseInjectionVisitor, null);
-//    System.out.println(classUnderTest);
+    System.out.println(classUnderTest);
 
     // to be used as final static variable in Host
     int numberOfBranches = ifElseInjectionVisitor.getIdCounter();
