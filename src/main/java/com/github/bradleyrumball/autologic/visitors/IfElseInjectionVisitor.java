@@ -3,20 +3,33 @@ package com.github.bradleyrumball.autologic.visitors;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.stmt.IfStmt;
-import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
 
 import java.util.ArrayList;
 
 public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
 
+    /**
+     * A counter to keep track of the id of the log statement injected
+     */
     private int idCounter = 0;
-    private ArrayList<BinaryExpr> elseBuilder = new ArrayList<>();
+    /**
+     * Used to collect conditions from if statements that will be
+     * inverted to find the else branch execution condition
+     */
+    private final ArrayList<BinaryExpr> elseBuilder = new ArrayList<>();
+
+    /**
+     * Used to get the number of logging statements issued
+     * @return count of log IDs
+     */
+    public int getIdCounter() {
+        return idCounter;
+    }
 
     /***
-     * Injects CU with log statements.
+     * Custom visitor function that recursively calls itself
      *
      * @param n A visitor
      * @param arg args due to inheritance
@@ -24,21 +37,32 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
      */
     @Override
     public IfStmt visit(IfStmt n, Void arg) {
+        //Check if the current IF statement that we are visiting as already been injected with log statements
         String nS = n.toString();
         if (!nS.contains("log")) {
             BinaryExpr conditionExpression = n.getCondition().asBinaryExpr();
-            System.out.println(n);
-            System.out.println("-----------");
+            // Add the current visitor condition to the list of conditions for constructing the else branch
             elseBuilder.add(conditionExpression.clone());
-            n.setCondition(ifLogStatement(conditionExpression));
+            // Transform IF's condition to log statement
+            n.setCondition(getLogStatement(conditionExpression, false));
 
 
-            // For else statements ...
+            // For the IF's else branch...
             n.getElseStmt().ifPresent(stmt -> {
+                /* ...if the else branch is a block statement (example below)
+                        if(condition) {
+                        } else {
+                        }
+                 */
                 if (stmt.isBlockStmt()) {
                     IfStmt elif = new IfStmt().setCondition(buildElse());
                     n.setElseStmt(elif);
-                    // If inline
+
+
+                /* ...if the else branch is inline and NOT an if statement (example below)
+                        if(condition) {
+                        } else statement();
+                 */
                 } else if (!stmt.isIfStmt()) {
                     IfStmt elif = new IfStmt().setCondition(buildElse());
                     n.setElseStmt(elif);
@@ -46,8 +70,9 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
             });
 
 
-            // Adds else statement after a single if for alternate branch
+            // if the IF does not have an else branch we append one with a logging condition
             if (!n.hasElseBranch() && !n.hasElseBlock()) {
+                // Else branches are created as Else IFs as we use De Morgan's of all leading if conditions
                 IfStmt elif = new IfStmt().setCondition(buildElse());
                 n.setElseStmt(elif);
             }
@@ -56,48 +81,49 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
         }
         // Recursion
         super.visit(n, arg);
-//        System.out.println(n);
+        // Return the injected cu
         return n;
     }
 
-    protected Expression buildElse() {
-//        System.out.println("e:"+elseBuilder);
-        String combined = "";
+    /**
+     * Used to build the else condition
+     * As our GA will need to track else branches for full branch coverage and full condition coverage
+     * we construct a condition set for the else branch which is based on De Morgan's laws.
+     * The conditions from all ifs and if-else's in a block are taken; their logical operators are
+     * replaced with the logical complement. If there is a chain of conditions the && or || are again swapped
+     * @return Logged else expression
+     */
+    private Expression buildElse() {
+        StringBuilder combined = new StringBuilder();
+        // Combine all conditions into one singular string and join conditions with &&
         for (int i = 0; i < elseBuilder.size(); i++) {
-            combined += "(" + elseGenerator(elseBuilder.get(i)).toString() + ")";
-            if (i != elseBuilder.size() - 1) combined += " && ";
+            // Else generator returns the logging statements for each condition with De Morgans applied
+            combined.append("(").append(getLogStatement(elseBuilder.get(i),true).toString()).append(")");
+            if (i != elseBuilder.size() - 1) combined.append(" && ");
         }
-        Expression polishedElse = StaticJavaParser.parseExpression(combined);
-        System.out.println(polishedElse);
+        // Parse the string to create an Expression object that can be used as a new if condition
+        Expression polishedElse = StaticJavaParser.parseExpression(combined.toString());
+        // Else builder must be cleared to allow later if blocks to build else's without conflict
         elseBuilder.clear();
         return polishedElse;
     }
 
-    public int getIdCounter() {
-        return idCounter;
-    }
-
-    public Expression ifLogStatement (BinaryExpr e) {
+    /**
+     * Used to transform a logical condition into a logging statement
+     * Can handle chained conditions such as those combined with && or || as it is recursive
+     * @param e A logical condition
+     * @param invert If we are building an else condition we want to perform De Morgan's (invert -> true)
+     * @return A logging expression
+     */
+    private Expression getLogStatement(BinaryExpr e, Boolean invert) {
+        // Recursive step - whilst operator is an AND or OR we recall the function
         if (e.getOperator() == BinaryExpr.Operator.AND || e.getOperator() == BinaryExpr.Operator.OR) {
-            e.setLeft(ifLogStatement(e.getLeft().asBinaryExpr()));
-            e.setRight(ifLogStatement(e.getRight().asBinaryExpr()));
-            return e;
+            e.setLeft(getLogStatement(e.getLeft().asBinaryExpr(), invert));
+            e.setRight(getLogStatement(e.getRight().asBinaryExpr(), invert));
+            return invert ? invertExpression(e) : e;
+        //Base case - one there are no more ANDs or ORs we have pure logical conditions (i.e <,>,!=,==, and so on)
         } else {
-            String insert = "log(" + idCounter + "," + e.getLeft().toString()
-                    + "," + e.getRight().toString() + ",Operator." + e.getOperator().name() + ")";
-            Expression expressionIfStatement = StaticJavaParser.parseExpression(insert);
-            idCounter++;
-            return expressionIfStatement;
-        }
-    }
-
-    public Expression elseGenerator (BinaryExpr e) {
-        if (e.getOperator() == BinaryExpr.Operator.AND || e.getOperator() == BinaryExpr.Operator.OR) {
-            e.setLeft(elseGenerator(e.getLeft().asBinaryExpr()));
-            e.setRight(elseGenerator(e.getRight().asBinaryExpr()));
-            return invertExpression(e);
-        } else {
-            BinaryExpr condition = invertExpression(e);
+            BinaryExpr condition = invert ? invertExpression(e) : e;
             String insert = "log(" + idCounter + "," + condition.getLeft().toString()
                     + "," + condition.getRight().toString() + ",Operator." + condition.getOperator().name() + ")";
             Expression expressionCondition = StaticJavaParser.parseExpression(insert);
@@ -106,23 +132,13 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
         }
     }
 
-    @Deprecated
-    public Statement elseLogStatement (BinaryExpr e) {
-            BinaryExpr elseExpression = invertExpression(e);
-            String insertElse = "log(" + idCounter + "," + elseExpression.getLeft().toString()
-                    + "," + elseExpression.getRight().toString() + ",Operator." + elseExpression.getOperator().name() + ")";
-            Statement statementElse = StaticJavaParser.parseStatement(insertElse + ";");
-            idCounter++;
-            return statementElse;
-    }
-
     /***
      * Helper function to invert operators - mainly used for else statements
      *
      * @param e A binary Expression
      * @return New Binary Expression
      */
-    public BinaryExpr invertExpression(BinaryExpr e) {
+    private BinaryExpr invertExpression(BinaryExpr e) {
         BinaryExpr.Operator operator = null;
         switch (e.getOperator()) {
             case EQUALS: operator = BinaryExpr.Operator.NOT_EQUALS; break;
@@ -133,37 +149,8 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
             case LESS_EQUALS: operator = BinaryExpr.Operator.GREATER; break;
             case AND: operator = BinaryExpr.Operator.OR; break;
             case OR: operator = BinaryExpr.Operator.AND; break;
-//                return deMorgan(e);
         }
         return new BinaryExpr(e.getLeft(), e.getRight(), operator);
     }
 
-    @Deprecated
-    public BinaryExpr deMorgan(BinaryExpr expression) {
-        Expression left = expression.getLeft().clone();
-        Expression right = expression.getRight().clone();
-        BinaryExpr.Operator op = null;
-        switch (expression.getOperator()){
-            case AND: op = BinaryExpr.Operator.OR; break;
-            case OR: op = BinaryExpr.Operator.AND; break;
-        }
-
-        if(left.isBinaryExpr()) {
-            left = invertExpression(left.asBinaryExpr());
-        } else {
-            left = new UnaryExpr(left, UnaryExpr.Operator.LOGICAL_COMPLEMENT);
-        }
-
-        if(right.isBinaryExpr()) {
-            right = invertExpression(right.asBinaryExpr());
-        } else {
-            right = new UnaryExpr(right, UnaryExpr.Operator.LOGICAL_COMPLEMENT);
-        }
-
-        return new BinaryExpr(left, right, op);
-    }
-
-        /*
-    TODO: - Fix injection with else branches
-     */
 }
