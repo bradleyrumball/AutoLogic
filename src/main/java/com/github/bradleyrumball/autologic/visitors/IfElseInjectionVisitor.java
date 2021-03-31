@@ -24,10 +24,13 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
      */
     @Override
     public IfStmt visit(IfStmt n, Void arg) {
-        Expression conditionExpression = n.getCondition();
-        if (conditionExpression.isBinaryExpr()) {
-            n.setCondition(ifLogStatement(conditionExpression.asBinaryExpr()));
-            elseBuilder.add(conditionExpression.asBinaryExpr().clone());
+        String nS = n.toString();
+        if (!nS.contains("log")) {
+            BinaryExpr conditionExpression = n.getCondition().asBinaryExpr();
+            System.out.println(n);
+            System.out.println("-----------");
+            elseBuilder.add(conditionExpression.clone());
+            n.setCondition(ifLogStatement(conditionExpression));
 
 
             // For else statements ...
@@ -65,7 +68,7 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
             if (i != elseBuilder.size() - 1) combined += " && ";
         }
         Expression polishedElse = StaticJavaParser.parseExpression(combined);
-//        System.out.println(polishedElse);
+        System.out.println(polishedElse);
         elseBuilder.clear();
         return polishedElse;
     }
@@ -75,7 +78,7 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
     }
 
     public Expression ifLogStatement (BinaryExpr e) {
-        if ((e.getOperator() == BinaryExpr.Operator.AND || e.getOperator() == BinaryExpr.Operator.OR) && (e.getLeft().isBinaryExpr() && e.getRight().isBinaryExpr())) {
+        if (e.getOperator() == BinaryExpr.Operator.AND || e.getOperator() == BinaryExpr.Operator.OR) {
             e.setLeft(ifLogStatement(e.getLeft().asBinaryExpr()));
             e.setRight(ifLogStatement(e.getRight().asBinaryExpr()));
             return e;
@@ -89,7 +92,7 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
     }
 
     public Expression elseGenerator (BinaryExpr e) {
-        if ((e.getOperator() == BinaryExpr.Operator.AND || e.getOperator() == BinaryExpr.Operator.OR) && (e.getLeft().isBinaryExpr() && e.getRight().isBinaryExpr())) {
+        if (e.getOperator() == BinaryExpr.Operator.AND || e.getOperator() == BinaryExpr.Operator.OR) {
             e.setLeft(elseGenerator(e.getLeft().asBinaryExpr()));
             e.setRight(elseGenerator(e.getRight().asBinaryExpr()));
             return invertExpression(e);
