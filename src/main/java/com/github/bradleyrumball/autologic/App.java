@@ -29,11 +29,12 @@ public class App {
 
 
   public static void main(String[] args) throws IOException {
-    CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/Triangle.java");
+    CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/BMICalculator.java");
 
     // inject CU with log statements on ifs
     IfElseInjectionVisitor ifElseInjectionVisitor = new IfElseInjectionVisitor();
     classUnderTest.accept(ifElseInjectionVisitor, null);
+    System.out.println(classUnderTest);
 
     // to be used as final static variable in Host
     int numberOfBranches = ifElseInjectionVisitor.getIdCounter();
