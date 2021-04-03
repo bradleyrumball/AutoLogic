@@ -31,7 +31,7 @@ public class JUnitOutputManager {
         int testNum = 1;
         for (OutputElement output : input) {
             body.append("\t@Test\n\tpublic void test" + testNum + "() {\n");
-            body.append("\t\tassertTrue(" + output.getMethod() + "(" + String.join(",", output.getInput()) + ") == " + output.getExpected() + ");\n");
+            body.append(output.createTestString());
             body.append("\t}\n\n");
             for(String i : output.getImports()) {
                 imports.add(i);

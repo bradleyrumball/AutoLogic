@@ -15,16 +15,16 @@ public class OutputElement {
     /***
      * Constructor for output element
      *
-     * @param m Method
-     * @param l What the user inputs are to be compared to the expected
-     * @param e What is expected
-     * @param i Imports
+     * @param method Method
+     * @param input What the user inputs are to be compared to the expected
+     * @param expected What is expected
+     * @param imports Imports
      */
-    public OutputElement(String m, List<String> l, String e, List<String> i) {
-        method = m;
-        input = l;
-        expected = e;
-        imports = i;
+    public OutputElement(String method, List<String> input, String expected, List<String> imports) {
+        this.method  = method ;
+        this.input = input;
+        this.expected = expected;
+        this.imports = imports;
     }
 
     /***
@@ -32,7 +32,7 @@ public class OutputElement {
      *
      * @param method the method name
      */
-    public void setMethod(String method) {
+    protected void setMethod(String method) {
         this.method = method;
     }
 
@@ -41,7 +41,7 @@ public class OutputElement {
      *
      * @param input List of inputs
      */
-    public void setInput(List<String> input) {
+    protected void setInput(List<String> input) {
         this.input = input;
     }
 
@@ -50,7 +50,7 @@ public class OutputElement {
      *
      * @param expected Output string
      */
-    public void setExpected(String expected) {
+    protected void setExpected(String expected) {
         this.expected = expected;
     }
 
@@ -59,7 +59,7 @@ public class OutputElement {
      *
      * @param imports List of imports as strings
      */
-    public void setImports(List<String> imports) {
+    protected void setImports(List<String> imports) {
         this.imports = imports;
     }
 
@@ -68,7 +68,7 @@ public class OutputElement {
      *
      * @return method String
      */
-    public String getMethod() {
+    protected String getMethod() {
         return method;
     }
 
@@ -77,7 +77,7 @@ public class OutputElement {
      *
      * @return A list of inputs
      */
-    public List<String> getInput() {
+    protected List<String> getInput() {
         return input;
     }
 
@@ -86,7 +86,7 @@ public class OutputElement {
      *
      * @return expected result String
      */
-    public String getExpected() {
+    protected String getExpected() {
         return expected;
     }
 
@@ -95,7 +95,12 @@ public class OutputElement {
      *
      * @return List of imports
      */
-    public List<String> getImports() {
+    protected List<String> getImports() {
         return imports;
+    }
+
+    protected String createTestString() {
+        String testOutput = "\t\tassertTrue(" + this.getMethod() + "(" + String.join(",", this.getInput()) + ") == " + this.getExpected() + ");\n";
+        return testOutput;
     }
 }
