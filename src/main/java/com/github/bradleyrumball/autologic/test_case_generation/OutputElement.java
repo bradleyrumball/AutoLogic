@@ -7,10 +7,10 @@ import java.util.List;
  */
 public class OutputElement {
 
-    public String method;
-    public List<String> input;
-    public String expected;
-    public List<String> imports;
+    private String method;
+    private List<String> input;
+    private String expected;
+    private List<String> imports;
 
     /***
      * Constructor for output element
@@ -25,5 +25,77 @@ public class OutputElement {
         input = l;
         expected = e;
         imports = i;
+    }
+
+    /***
+     * Setter for method name
+     *
+     * @param method the method name
+     */
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    /***
+     * Setter for inputs for the test
+     *
+     * @param input List of inputs
+     */
+    public void setInput(List<String> input) {
+        this.input = input;
+    }
+
+    /***
+     * Setter for expected output
+     *
+     * @param expected Output string
+     */
+    public void setExpected(String expected) {
+        this.expected = expected;
+    }
+
+    /***
+     * Setter for imports
+     *
+     * @param imports List of imports as strings
+     */
+    public void setImports(List<String> imports) {
+        this.imports = imports;
+    }
+
+    /***
+     * Getter for method string
+     *
+     * @return method String
+     */
+    public String getMethod() {
+        return method;
+    }
+
+    /***
+     * Getter for input list
+     *
+     * @return A list of inputs
+     */
+    public List<String> getInput() {
+        return input;
+    }
+
+    /***
+     * Getter for expected result
+     *
+     * @return expected result String
+     */
+    public String getExpected() {
+        return expected;
+    }
+
+    /***
+     * Getter for import list
+     *
+     * @return List of imports
+     */
+    public List<String> getImports() {
+        return imports;
     }
 }
