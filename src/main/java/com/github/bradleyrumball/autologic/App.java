@@ -1,14 +1,23 @@
 package com.github.bradleyrumball.autologic;
 
+import com.github.bradleyrumball.autologic.GA.Host;
+import com.github.bradleyrumball.autologic.visitors.HostVisitor;
 import com.github.bradleyrumball.autologic.visitors.IfElseInjectionVisitor;
 import com.github.bradleyrumball.autologic.visitors.ParameterVisitor;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class App {
 
@@ -28,8 +37,8 @@ public class App {
   }
 
 
-  public static void main(String[] args) throws IOException {
-    CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/BMICalculator.java");
+  public static <Host2> void main(String[] args) throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+    CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/Triangle.java");
 
     // inject CU with log statements on ifs
     IfElseInjectionVisitor ifElseInjectionVisitor = new IfElseInjectionVisitor();
@@ -45,6 +54,22 @@ public class App {
 
     // Compilation unit of host
     CompilationUnit host = getCU("src/main/java/com/github/bradleyrumball/autologic/GA/Host.java");
+
+    //Inject into Host using JP
+    host.getClassByName("Host").ifPresent(cls -> {cls.setName("Host2");});
+    host.accept(new HostVisitor(classUnderTest), null);
+    Files.write(Paths.get("src/main/java/com/github/bradleyrumball/autologic/GA/Host2.java"), host.toString().getBytes());
+
+    //Compile Host
+    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    compiler.run(null, null, null, Paths.get("src","main/java/com/github/bradleyrumball/autologic/GA/Host2.java").toString());
+
+    //Instance Host
+    URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { Paths.get("src","main/java/com/github/bradleyrumball/autologic/GA/Host2.java").toUri().toURL() });
+    Class<?> cls = Class.forName("com.github.bradleyrumball.autologic.GA.Host2", true, classLoader); // Should print "hello".
+    Host2 instance = (Host2)cls.newInstance(); // Should print "world".
+    //instance.run(null);
+    System.out.println(instance);
 
 //
 

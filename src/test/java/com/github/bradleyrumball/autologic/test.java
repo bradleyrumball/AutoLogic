@@ -5,72 +5,72 @@ import static org.junit.Assert.*;
 public class test {
 	@Test
 	public void test1() {
-		assertEquals("INVALID", String.valueOf(Triangle.classify(-1445947101,-1445947102,-1445947100)));
+		assertEquals("INVALID", String.valueOf(Triangle.classify(1412467282,-481112183,-481112183)));
 	}
 
 	@Test
 	public void test2() {
-		assertEquals("INVALID", String.valueOf(Triangle.classify(-510200684,-510200684,-510200684)));
+		assertEquals("EQUILATERAL", String.valueOf(Triangle.classify(1270528738,1270528738,1270528738)));
 	}
 
 	@Test
 	public void test3() {
-		assertEquals("INVALID", String.valueOf(Triangle.classify(-633641946,892545740,-2115315264)));
+		assertEquals("INVALID", String.valueOf(Triangle.classify(-260101909,887723002,-1692376678)));
 	}
 
 	@Test
 	public void test4() {
-		assertEquals("INVALID", String.valueOf(Triangle.classify(-673805938,-673805938,-673805938)));
+		assertEquals("EQUILATERAL", String.valueOf(Triangle.classify(967529501,967529501,967529501)));
 	}
 
 	@Test
 	public void test5() {
-		assertEquals("INVALID", String.valueOf(Triangle.classify(175193357,-729544612,-729544613)));
+		assertEquals("INVALID", String.valueOf(Triangle.classify(-1245312838,-1277391257,-1277391257)));
 	}
 
 	@Test
 	public void test6() {
-		assertEquals("EQUILATERAL", String.valueOf(Triangle.classify(1232115084,1232115084,1232115084)));
+		assertEquals("EQUILATERAL", String.valueOf(Triangle.classify(1020335573,1020335573,1020335573)));
 	}
 
 	@Test
 	public void test7() {
-		assertEquals("INVALID", String.valueOf(Triangle.classify(-1240995992,-1240995992,-1240995992)));
+		assertEquals("INVALID", String.valueOf(Triangle.classify(-348479382,-348479382,-348479382)));
 	}
 
 	@Test
 	public void test8() {
-		assertEquals("EQUILATERAL", String.valueOf(Triangle.classify(682301376,682301376,682301376)));
+		assertEquals("EQUILATERAL", String.valueOf(Triangle.classify(137929443,137929443,137929443)));
 	}
 
 	@Test
 	public void test9() {
-		assertEquals("EQUILATERAL", String.valueOf(Triangle.classify(1744965751,1744965751,1744965751)));
+		assertEquals("EQUILATERAL", String.valueOf(Triangle.classify(1486570068,1486570068,1486570068)));
 	}
 
 	@Test
 	public void test10() {
-		assertEquals("ISOSCELES", String.valueOf(Triangle.classify(1852241061,1852241061,1852241056)));
+		assertEquals("SCALENE", String.valueOf(Triangle.classify(1745720706,1312774156,1745720707)));
 	}
 
 	@Test
 	public void test11() {
-		assertEquals("ISOSCELES", String.valueOf(Triangle.classify(383855367,383855367,383855362)));
+		assertEquals("ISOSCELES", String.valueOf(Triangle.classify(2145583967,197120316,2145583967)));
 	}
 
 	@Test
 	public void test12() {
-		assertEquals("SCALENE", String.valueOf(Triangle.classify(1104245582,1399597963,1399597968)));
+		assertEquals("SCALENE", String.valueOf(Triangle.classify(1757892859,1757892854,1660481380)));
 	}
 
 	@Test
 	public void test13() {
-		assertEquals("EQUILATERAL", String.valueOf(Triangle.classify(2054593217,2054593217,2054593217)));
+		assertEquals("EQUILATERAL", String.valueOf(Triangle.classify(1581117639,1581117639,1581117639)));
 	}
 
 	@Test
 	public void test14() {
-		assertEquals("SCALENE", String.valueOf(Triangle.classify(803050175,803050170,803050170)));
+		assertEquals("SCALENE", String.valueOf(Triangle.classify(1827937056,1827937056,1827937061)));
 	}
 
 }

@@ -55,7 +55,7 @@ public class Host {
      * Runs the GA - probably should be abstracted to another class
      * @param args program args
      */
-    public static void main (String[] args) {
+    public static void run (String[] args) {
         ArrayList<Individual> solutions = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_BRANCHES; i++) {
             currentBranch = i;
