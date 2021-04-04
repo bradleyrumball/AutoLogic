@@ -49,6 +49,12 @@ public class Individual {
   }
 
   /**
+   * Getter for all genes
+   * @return array of genes
+   */
+  public int[] getGenes(){ return genes; }
+
+  /**
    * Return the number of genes that each individual carries
    * @return
    */

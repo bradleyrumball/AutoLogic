@@ -1,6 +1,7 @@
 package com.github.bradleyrumball.autologic.GA;
 
 import com.github.bradleyrumball.autologic.Triangle;
+import com.github.bradleyrumball.autologic.test_case_generation.JUnitOutputManager;
 import com.github.javaparser.ast.expr.BinaryExpr;
 
 import java.security.SecureRandom;
@@ -60,20 +61,22 @@ public class Host {
             currentBranch = i;
 
             Population population = new Population(50); //50
-            int generation = 1;
+//            int generation = 1;
             int populationFitness = population.getFittest().getFitness();
             while (populationFitness > 0) {
 //                System.out.println("Generation: " + generation + " Current fitness: " + populationFitness);
                 population = evolvePopulation(population);
-                generation++;
+//                generation++;
                 populationFitness = population.getFittest().getFitness();
             }
-            System.out.println("Solution for branch " + currentBranch + " has been found");
+            System.out.println("  for branch " + currentBranch + " has been found");
             solutions.add(i, population.getFittest());
 
         }
         System.out.println("Solutions found for all");
-        System.out.println(solutions.toString());
+        JUnitOutputManager jUnitGenerator = new JUnitOutputManager(solutions);
+        jUnitGenerator.unitGenerator();
+//        System.out.println(solutions.toString());
     }
 
     /**

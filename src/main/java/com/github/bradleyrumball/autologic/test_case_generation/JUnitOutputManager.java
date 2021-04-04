@@ -1,5 +1,7 @@
 package com.github.bradleyrumball.autologic.test_case_generation;
 
+import com.github.bradleyrumball.autologic.GA.Individual;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +13,16 @@ public class JUnitOutputManager {
 
     //input schema = List<Element>
     //Element schema =
+
+    private ArrayList<Individual> conditions;
+
+    /**
+     * Constructor for Junit Manager
+     * @param conditions array list of individuals
+     */
+    public JUnitOutputManager(ArrayList<Individual> conditions) {
+        this.conditions = conditions;
+    }
 
     /***
      * Generates the test file
@@ -64,11 +76,20 @@ public class JUnitOutputManager {
     }
 
     // Shows how files can be built. Will need to use o.add for multiple test cases.
-    public static void main(String[] args) throws IOException {
+    public void unitGenerator() {
         List<OutputElement> o = new ArrayList<>();
-        String[] s = {"5", "5", "5"};
-        String[] i = {"com.github.bradleyrumball.autologic.Triangle"};
-        o.add(new OutputElement("Triangle.classify", Arrays.asList(s), "Triangle.Type.EQUILATERAL", Arrays.asList(i)));
-        generate(o, "src"+ File.separator + "main"+ File.separator + "resources"+ File.separator + "testOutput"+ File.separator + "test.java");
+        for (Individual condition : conditions) {
+            String inputs = Arrays.toString(condition.getGenes());//{"5", "5", "5"};
+            inputs = inputs.replace('[', ' ').replace(']', ' ').trim();
+            String[] imports = {"com.github.bradleyrumball.autologic.Triangle"};
+            o.add(new OutputElement("Triangle.classify",Arrays.asList(inputs), condition.getMethodReturnValue().toString(), Arrays.asList(imports)));
+        }
+
+
+        try {
+            generate(o, "src"+ File.separator + "test"+ File.separator + "java"+ File.separator + "com"+ File.separator + "github"+ File.separator + "bradleyrumball"+ File.separator + "autologic"+ File.separator + "test.java");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

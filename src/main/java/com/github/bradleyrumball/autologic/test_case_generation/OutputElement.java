@@ -8,7 +8,7 @@ import java.util.List;
 public class OutputElement {
 
     private String method;
-    private List<String> input;
+    private List<String>  input;
     private String expected;
     private List<String> imports;
 
@@ -41,7 +41,7 @@ public class OutputElement {
      *
      * @param input List of inputs
      */
-    protected void setInput(List<String> input) {
+    protected void setInput(List<String>  input) {
         this.input = input;
     }
 
@@ -77,7 +77,7 @@ public class OutputElement {
      *
      * @return A list of inputs
      */
-    protected List<String> getInput() {
+    protected List<String>  getInput() {
         return input;
     }
 
