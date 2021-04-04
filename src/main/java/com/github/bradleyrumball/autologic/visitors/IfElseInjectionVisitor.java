@@ -125,7 +125,7 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
         } else {
             BinaryExpr condition = invert ? invertExpression(e) : e;
             String insert = "log(" + idCounter + "," + condition.getLeft().toString()
-                    + "," + condition.getRight().toString() + ",Operator." + condition.getOperator().name() + ")";
+                    + "," + condition.getRight().toString() + ",BinaryExpr.Operator." + condition.getOperator().name() + ")";
             Expression expressionCondition = StaticJavaParser.parseExpression(insert);
             idCounter++;
             return expressionCondition;
