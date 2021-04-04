@@ -79,10 +79,13 @@ public class JUnitOutputManager {
     public void unitGenerator() {
         List<OutputElement> o = new ArrayList<>();
         for (Individual condition : conditions) {
-            String inputs = Arrays.toString(condition.getGenes());//{"5", "5", "5"};
-            inputs = inputs.replace('[', ' ').replace(']', ' ').trim();
+            ArrayList<String> inputs = new ArrayList<>();// = {"5", "5", "5"};
+            for (int gene : condition.getGenes()) {
+                System.out.println(gene);
+                inputs.add(String.valueOf(gene));
+            }
             String[] imports = {"com.github.bradleyrumball.autologic.Triangle"};
-            o.add(new OutputElement("Triangle.classify",Arrays.asList(inputs), condition.getMethodReturnValue().toString(), Arrays.asList(imports)));
+            o.add(new OutputElement("Triangle.classify",inputs, condition.getMethodReturnValue().toString(), Arrays.asList(imports)));
         }
 
 
