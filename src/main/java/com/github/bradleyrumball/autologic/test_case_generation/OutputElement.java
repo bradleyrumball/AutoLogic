@@ -100,7 +100,7 @@ public class OutputElement {
     }
 
     protected String createTestString() {
-        String testOutput = "\t\tassertTrue(" + this.getMethod() + "(" + String.join(",", this.getInput()) + ") == " + this.getExpected() + ");\n";
+        String testOutput = "\t\tassertEquals(" + "\""+this.getExpected()+"\""+ ", " + "String.valueOf("+this.getMethod() + "(" + String.join(",", this.getInput()) + "))" + ");\n";
         return testOutput;
     }
 }

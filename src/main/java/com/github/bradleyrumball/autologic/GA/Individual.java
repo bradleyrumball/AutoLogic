@@ -90,7 +90,7 @@ public class Individual {
    * @return Object (the return type of the method under test)
    */
   public Object getMethodReturnValue() {
-    if (methodReturnValue == null) methodReturnValue= Host.getMethodReturn(this);
+    /*if (methodReturnValue == null)*/ methodReturnValue= Host.getMethodReturn(this);
     return methodReturnValue;
   }
 

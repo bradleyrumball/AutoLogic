@@ -46,6 +46,8 @@ public class App {
     // Compilation unit of host
     CompilationUnit host = getCU("src/main/java/com/github/bradleyrumball/autologic/GA/Host.java");
 
+//
+
     /*
     TODO: - inject classUnderTest into host
           - when injected method to be tested should be called "instrumentedMethod"
