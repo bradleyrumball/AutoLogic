@@ -1,6 +1,5 @@
 package com.github.bradleyrumball.autologic;
 
-import com.github.bradleyrumball.autologic.GA.Host;
 import com.github.bradleyrumball.autologic.visitors.HostVisitor;
 import com.github.bradleyrumball.autologic.visitors.IfElseInjectionVisitor;
 import com.github.bradleyrumball.autologic.visitors.ParameterVisitor;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class App {
@@ -68,9 +66,9 @@ public class App {
     URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { Paths.get("src","main/java/com/github/bradleyrumball/autologic/GA/Host2.java").toUri().toURL() });
     Class<?> cls = Class.forName("com.github.bradleyrumball.autologic.GA.Host2", true, classLoader);
     Host2 instance = (Host2)cls.newInstance();
-    //instance.run(null);
+//    instance.run(null);
     //Can now do stuff like instance.METHODS-IN-HOST
-    System.out.println(instance);
+//    System.out.println(instance);
 
 //
 
