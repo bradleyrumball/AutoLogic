@@ -78,6 +78,11 @@ public class Individual {
     return fitness;
   }
 
+  /**
+   * Calls back to the host to run the class under test and get the expected output that will be used
+   * in the methodReturnValue
+   * @return Object (the return type of the method under test)
+   */
   public Object getMethodReturnValue() {
     if (methodReturnValue == null) methodReturnValue= Host.getMethodReturn(this);
     return methodReturnValue;

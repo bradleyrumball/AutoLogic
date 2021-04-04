@@ -177,7 +177,12 @@ public class Host {
         return currentFitness;
     }
 
-
+    /**
+     * Called by the individual class, an individuals gene pool is run on the method this allows us to obtain the
+     * expected value of a junit test
+     * @param individual the individual to test the class with
+     * @return the output from the class under test
+     */
     protected static Object getMethodReturn(Individual individual) {
         return instrumentedMethod(individual.getGene(0), individual.getGene(1), individual.getGene(2));
     }
