@@ -70,6 +70,7 @@ public class Host {
             }
             System.out.println("Solution for branch " + currentBranch + " has been found");
             solutions.add(i, population.getFittest());
+
         }
         System.out.println("Solutions found for all");
         System.out.println(solutions.toString());
@@ -174,6 +175,11 @@ public class Host {
         instrumentedMethod(individual.getGene(0), individual.getGene(1), individual.getGene(2));
 
         return currentFitness;
+    }
+
+
+    protected static Object getMethodReturn(Individual individual) {
+        return instrumentedMethod(individual.getGene(0), individual.getGene(1), individual.getGene(2));
     }
 
     /**

@@ -27,6 +27,8 @@ public class Individual {
    */
   private int fitness = Integer.MAX_VALUE;
 
+  private Object methodReturnValue;
+
   /**
    * Constructor, individuals are created with their initial gene pool set
    * such that all genes are equal, this is because it is time consuming for
@@ -76,6 +78,11 @@ public class Individual {
     return fitness;
   }
 
+  public Object getMethodReturnValue() {
+    if (methodReturnValue == null) methodReturnValue= Host.getMethodReturn(this);
+    return methodReturnValue;
+  }
+
   /**
    * For debugging more than anything
    * @return The individual as a string
@@ -85,7 +92,7 @@ public class Individual {
     String[] genesString = Arrays.stream(genes)
             .mapToObj(String::valueOf)
             .toArray(String[]::new);
-    return ("Input Params: " + Arrays.toString(genesString) + " | Fitness: " + fitness+"\n");
+    return ("Input Params: " + Arrays.toString(genesString) + " | Fitness: " + fitness+ " | Method Out: "+ getMethodReturnValue() +"\n");
   }
 
 
