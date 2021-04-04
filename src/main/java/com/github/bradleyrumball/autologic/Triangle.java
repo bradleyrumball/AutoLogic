@@ -33,8 +33,7 @@ public class Triangle {
             side2 = side3;
             side3 = temp;
         }
-
-        if (side1 + side2 <= side3) {
+        if ((long) side1 + (long) side2 <= side3) {
             type = Type.INVALID;
         } else {
             type = Type.SCALENE;
@@ -49,5 +48,9 @@ public class Triangle {
             }
         }
         return type;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(classify(-1688660132, 1216423989, -1601406060));
     }
 }

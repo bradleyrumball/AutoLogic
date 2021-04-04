@@ -25,7 +25,7 @@ public class Individual {
    * Worst fitness is determined as Integer.Max
    * Ideal fitness is 0
    */
-  private int fitness = Integer.MAX_VALUE;
+  private long fitness = Integer.MAX_VALUE;
 
   private Object methodReturnValue;
 
@@ -79,7 +79,7 @@ public class Individual {
    * calculated.
    * @return int - fitness value of the individual
    */
-  public int getFitness() {
+  public long getFitness() {
     if (fitness == Integer.MAX_VALUE) fitness = Host.getFitness(this);
     return fitness;
   }

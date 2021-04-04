@@ -35,7 +35,7 @@ public class PopulationTest {
     @Test
     public void correctIndividualReturnedAsFittest() {
         ArrayList<Individual> allIndividuals = population.getIndividuals();
-        int fittest = Integer.MAX_VALUE;
+        long fittest = Integer.MAX_VALUE;
         for (Individual i: allIndividuals) {
             if (i.getFitness() < fittest) fittest = i.getFitness();
         }

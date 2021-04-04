@@ -37,9 +37,9 @@ public class IndividualTest {
    */
   @Test
   public void setGene() {
-    int oldFitness = individual.getFitness();
+    long oldFitness = individual.getFitness();
     individual.setGene(0, 1);
-    int newFitness = individual.getFitness();
+    long newFitness = individual.getFitness();
     assertNotEquals(oldFitness, newFitness);
   }
 }

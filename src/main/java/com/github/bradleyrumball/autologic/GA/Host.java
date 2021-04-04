@@ -31,7 +31,7 @@ public class Host {
      * The fitness of an individual that has been run
      * This value is used as a handler between log, getFitness and handing back to the individual class
      */
-    private static int currentFitness;
+    private static long currentFitness;
 
     /**
      * The rate (0->1) that we which to mutate individuals in the population at
@@ -62,7 +62,7 @@ public class Host {
 
             Population population = new Population(50); //50
 //            int generation = 1;
-            int populationFitness = population.getFittest().getFitness();
+            long populationFitness = population.getFittest().getFitness();
             while (populationFitness > 0) {
 //                System.out.println("Generation: " + generation + " Current fitness: " + populationFitness);
                 population = evolvePopulation(population);
@@ -173,7 +173,7 @@ public class Host {
      * @param individual the individual to test the class with
      * @return fitness of individual
      */
-    protected static int getFitness(Individual individual) {
+    protected static long getFitness(Individual individual) {
         currentFitness = Integer.MAX_VALUE;
         instrumentedMethod(individual.getGene(0), individual.getGene(1), individual.getGene(2));
 
@@ -198,9 +198,9 @@ public class Host {
      * @param operator the operator in the condition between left and right
      * @return the boolean output of the condition once evaluated
      */
-    private static boolean log(int id, int left, int right, BinaryExpr.Operator operator) {
+    private static boolean log(int id, long left, long right, BinaryExpr.Operator operator) {
         Fitness f = new Fitness(left, right, operator);
-        int fScore = Integer.MAX_VALUE;
+        long fScore = Integer.MAX_VALUE;
         try {
             fScore = f.getFitness();
         } catch (Exception e) {
@@ -250,27 +250,27 @@ public class Host {
         } else {
             log(5, side2, side3, BinaryExpr.Operator.LESS_EQUALS);
         }
-
-        if (log(6, side1 + side2, side3, BinaryExpr.Operator.LESS_EQUALS)) {
-            type = Triangle.Type.INVALID;
-        } else {
-            log(7, side1 + side2, side3, BinaryExpr.Operator.GREATER);
-            type = Triangle.Type.SCALENE;
-            if (log(8, side1, side2, BinaryExpr.Operator.EQUALS)) {
-                if (log(12, side2, side3, BinaryExpr.Operator.EQUALS)) {
-                    type = Triangle.Type.EQUILATERAL;
-                } else {
-                    log(13, side2, side3, BinaryExpr.Operator.NOT_EQUALS);
-                }
+            if (log(6, (long)side1+(long)side2, side3, BinaryExpr.Operator.LESS_EQUALS)) {
+                type = Triangle.Type.INVALID;
             } else {
-                log(9, side1, side2, BinaryExpr.Operator.NOT_EQUALS);
-                if (log(10, side2, side3, BinaryExpr.Operator.EQUALS)) {
-                    type = Triangle.Type.ISOSCELES;
+                    log(7, (long)side1+(long)side2, side3, BinaryExpr.Operator.GREATER);
+
+                type = Triangle.Type.SCALENE;
+                if (log(8, side1, side2, BinaryExpr.Operator.EQUALS)) {
+                    if (log(12, side2, side3, BinaryExpr.Operator.EQUALS)) {
+                        type = Triangle.Type.EQUILATERAL;
+                    } else {
+                        log(13, side2, side3, BinaryExpr.Operator.NOT_EQUALS);
+                    }
                 } else {
-                    log(11, side2, side3, BinaryExpr.Operator.NOT_EQUALS);
+                    log(9, side1, side2, BinaryExpr.Operator.NOT_EQUALS);
+                    if (log(10, side2, side3, BinaryExpr.Operator.EQUALS)) {
+                        type = Triangle.Type.ISOSCELES;
+                    } else {
+                        log(11, side2, side3, BinaryExpr.Operator.NOT_EQUALS);
+                    }
                 }
             }
-        }
         return type;
     }
 }

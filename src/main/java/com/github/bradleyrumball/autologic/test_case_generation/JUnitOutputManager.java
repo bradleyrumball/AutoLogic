@@ -85,7 +85,7 @@ public class JUnitOutputManager {
                 inputs.add(String.valueOf(gene));
             }
             String[] imports = {"com.github.bradleyrumball.autologic.Triangle"};
-            o.add(new OutputElement("Triangle.classify",inputs, condition.getMethodReturnValue().toString(), Arrays.asList(imports)));
+            o.add(new OutputElement("Triangle.classify",inputs, String.valueOf(condition.getMethodReturnValue()), Arrays.asList(imports)));
         }
 
 
