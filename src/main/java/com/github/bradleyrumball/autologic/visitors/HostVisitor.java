@@ -23,7 +23,9 @@ public class HostVisitor extends ModifierVisitor<Void> {
     @Override
     public Visitable visit(ClassOrInterfaceDeclaration n, Void arg) {
         MethodDeclaration method = n.addMethod("Name");
+        //Sets the type
         method.setType(Object.class);
+        // Adds parameters to the newly injected class
         method.addParameter("int", "side1");
         method.addParameter("int", "side2");
         method.addParameter("int", "side3");

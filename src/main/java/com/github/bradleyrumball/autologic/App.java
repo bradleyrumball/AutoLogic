@@ -66,9 +66,10 @@ public class App {
 
     //Instance Host
     URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { Paths.get("src","main/java/com/github/bradleyrumball/autologic/GA/Host2.java").toUri().toURL() });
-    Class<?> cls = Class.forName("com.github.bradleyrumball.autologic.GA.Host2", true, classLoader); // Should print "hello".
-    Host2 instance = (Host2)cls.newInstance(); // Should print "world".
+    Class<?> cls = Class.forName("com.github.bradleyrumball.autologic.GA.Host2", true, classLoader);
+    Host2 instance = (Host2)cls.newInstance();
     //instance.run(null);
+    //Can now do stuff like instance.METHODS-IN-HOST
     System.out.println(instance);
 
 //
