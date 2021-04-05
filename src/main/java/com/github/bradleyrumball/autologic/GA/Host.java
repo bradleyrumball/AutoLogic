@@ -55,7 +55,7 @@ public class Host {
      * Runs the GA - probably should be abstracted to another class
      * @param args program args
      */
-    public static void run (String[] args) {
+    public static void main (String[] args) {
         ArrayList<Individual> solutions = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_BRANCHES; i++) {
             currentBranch = i;
@@ -225,49 +225,42 @@ public class Host {
 
      */
     private static Triangle.Type instrumentedMethod(int side1, int side2, int side3) {
-        Triangle.Type type;
+        Triangle.Type type = null;
 
         if (log(0, side1, side2, BinaryExpr.Operator.GREATER)) {
             int temp = side1;
             side1 = side2;
             side2 = temp;
-        } else {
-            log(1, side1, side2, BinaryExpr.Operator.LESS_EQUALS);
+        } else if (log(1, side1, side2, BinaryExpr.Operator.LESS_EQUALS)) {
         }
 
         if (log(2,side1, side3, BinaryExpr.Operator.GREATER)) {
             int temp = side1;
             side1 = side3;
             side3 = temp;
-        } else {
-            log(3,side1, side3, BinaryExpr.Operator.LESS_EQUALS);
+        } else if(log(3,side1, side3, BinaryExpr.Operator.LESS_EQUALS)) {
         }
 
         if (log(4, side2, side3, BinaryExpr.Operator.GREATER)) {
             int temp = side2;
             side2 = side3;
             side3 = temp;
-        } else {
-            log(5, side2, side3, BinaryExpr.Operator.LESS_EQUALS);
+        } else if(log(5, side2, side3, BinaryExpr.Operator.LESS_EQUALS)){
+
         }
             if (log(6, (long)side1+(long)side2, side3, BinaryExpr.Operator.LESS_EQUALS)) {
                 type = Triangle.Type.INVALID;
-            } else {
-                    log(7, (long)side1+(long)side2, side3, BinaryExpr.Operator.GREATER);
-
+            } else if(log(7, (long)side1+(long)side2, side3, BinaryExpr.Operator.GREATER)){
                 type = Triangle.Type.SCALENE;
                 if (log(8, side1, side2, BinaryExpr.Operator.EQUALS)) {
                     if (log(12, side2, side3, BinaryExpr.Operator.EQUALS)) {
                         type = Triangle.Type.EQUILATERAL;
-                    } else {
-                        log(13, side2, side3, BinaryExpr.Operator.NOT_EQUALS);
+                    } else if(log(13, side2, side3, BinaryExpr.Operator.NOT_EQUALS)){
                     }
-                } else {
-                    log(9, side1, side2, BinaryExpr.Operator.NOT_EQUALS);
+                } else if(log(9, side1, side2, BinaryExpr.Operator.NOT_EQUALS)){
                     if (log(10, side2, side3, BinaryExpr.Operator.EQUALS)) {
                         type = Triangle.Type.ISOSCELES;
-                    } else {
-                        log(11, side2, side3, BinaryExpr.Operator.NOT_EQUALS);
+                    } else if(log(11, side2, side3, BinaryExpr.Operator.NOT_EQUALS)){
                     }
                 }
             }

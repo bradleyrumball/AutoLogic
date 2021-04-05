@@ -1,21 +1,13 @@
 package com.github.bradleyrumball.autologic;
 
-import com.github.bradleyrumball.autologic.visitors.HostVisitor;
 import com.github.bradleyrumball.autologic.visitors.IfElseInjectionVisitor;
-import com.github.bradleyrumball.autologic.visitors.ParameterVisitor;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class App {
 
@@ -36,13 +28,13 @@ public class App {
 
 
   public static <Host2> void main(String[] args) throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-    CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/Triangle.java");
+    CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/BMICalculator.java");
 
     // inject CU with log statements on ifs
     IfElseInjectionVisitor ifElseInjectionVisitor = new IfElseInjectionVisitor();
     classUnderTest.accept(ifElseInjectionVisitor, null);
     System.out.println(classUnderTest);
-
+    /*
     // to be used as final static variable in Host
     int numberOfBranches = ifElseInjectionVisitor.getIdCounter();
 
@@ -71,7 +63,7 @@ public class App {
 //    System.out.println(instance);
 
 //
-
+*/
     /*
     TODO: - inject classUnderTest into host
           - when injected method to be tested should be called "instrumentedMethod"

@@ -22,7 +22,6 @@ public class Triangle {
             int temp = side1;
             side1 = side2;
             side2 = temp;
-
         }
         if (side1 > side3) {
             int temp = side1;
@@ -35,7 +34,7 @@ public class Triangle {
             side3 = temp;
         }
 
-        if (side1 + side2 <= side3) {
+        if ((long)side1 + (long)side2 <= side3) {
             type = Type.INVALID;
         } else {
             type = Type.SCALENE;
