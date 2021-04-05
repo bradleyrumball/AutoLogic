@@ -3,12 +3,15 @@ package com.github.bradleyrumball.autologic.visitors;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
 
 import java.util.ArrayList;
 
 public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
+
+    private boolean ignoreIf = false;
 
     /**
      * A counter to keep track of the id of the log statement injected
@@ -39,55 +42,58 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
     @Override
     public IfStmt visit(IfStmt n, Void arg) {
         //Check if the current IF statement that we are visiting as already been injected with log statements
-        System.out.println(n);
-        BinaryExpr conditionExpression = null;
-//        if (!n.getCondition().toString().contains("log")) {
-            conditionExpression = n.getCondition().asBinaryExpr().clone();
+        //System.out.println(n);
+        BinaryExpr conditionExpression = n.getCondition().asBinaryExpr().clone();
+        n.setCondition(getLogStatement(n.getCondition().asBinaryExpr(), false));
             // Add the current visitor condition to the list of conditions for constructing the else branch
             elseBuilder.add(conditionExpression.clone());
 //        }
 //
-//
+        if(!ignoreIf) {
 //
 //        // For the IF's else branch...
-//        n.getElseStmt().ifPresent(stmt -> {
-//            /* ...if the else branch is a block statement (example below)
-//                if(condition) {
-//                } else {
-//                }
-//            */
-//            if(stmt.isBlockStmt()) {
-//                BlockStmt elseBlock = stmt.asBlockStmt();
-//                elseBlock.addStatement(buildElse());
-//            }
-//
-//            /* ...if the else branch is inline and NOT an if statement (example below)
-//                if(condition) {
-//                } else statement();
-//            */
-//            if(!stmt.isIfStmt()) {
-//                BlockStmt elseBlock = new BlockStmt();
-//                IfStmt ifs = new IfStmt();
-//                n.setElseStmt(ifs);
-//                ifs.setThenStmt(stmt);
-//                ifs.setCondition(buildElse());
-//
-//            }
-//        });
+            n.getElseStmt().ifPresent(stmt -> {
+                if (!stmt.isIfStmt()) {
+                    ignoreIf = true;
+                    BlockStmt elseBlock;
+                    if (!stmt.isBlockStmt()) {
+                        elseBlock = new BlockStmt();
+                        elseBlock.addStatement(stmt);
+                        n.setElseStmt(elseBlock);
+                    } else {
+                        elseBlock = stmt.asBlockStmt();
+                    }
+
+                    IfStmt ifStmt = new IfStmt();
+                    ifStmt.setCondition(invertExpression(conditionExpression));
+                    ifStmt.setThenStmt(elseBlock);
+
+                    n.setElseStmt(ifStmt);
+
+                }
+            });
 //
 ////        if (n.hasElseBlock() && !n.getCondition().toString().contains("log")){
 ////            n.hasElseBlock()
 ////            buildElse();
 ////        }
 //
-//        if ((!n.hasElseBlock() || !n.hasElseBranch()) && !n.getCondition().toString().contains("log"))
-//            n.setElseStmt(new IfStmt().setCondition(buildElse()));
+            if (!n.hasElseBlock() && !n.hasElseBranch()) {
+                IfStmt ifStmt = new IfStmt();
+                ifStmt.setCondition(invertExpression(conditionExpression));
+                ifStmt.setThenStmt(new BlockStmt());
+                n.setElseStmt(ifStmt);
+                ignoreIf = true;
+            }
+        } else {
+            ignoreIf = false;
+        }
 
 
 
         // Transform IF's condition to log statement
 //        if (!n.getCondition().toString().contains("log"))
-            n.setCondition(getLogStatement(conditionExpression, false));
+
 //        System.out.println("-->: "+n);
         // Recursion
         super.visit(n, arg);

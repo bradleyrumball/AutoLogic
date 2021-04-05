@@ -28,7 +28,7 @@ public class App {
 
 
   public static <Host2> void main(String[] args) throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-    CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/BMICalculator.java");
+    CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/FizzBuzz.java");
 
     // inject CU with log statements on ifs
     IfElseInjectionVisitor ifElseInjectionVisitor = new IfElseInjectionVisitor();
