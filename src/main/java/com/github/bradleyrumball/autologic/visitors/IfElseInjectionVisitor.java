@@ -1,12 +1,17 @@
 package com.github.bradleyrumball.autologic.visitors;
 
+import com.github.bradleyrumball.autologic.logging.MethodLogger;
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
+import com.github.javaparser.ast.visitor.Visitable;
 
 import java.util.ArrayList;
 
@@ -22,6 +27,8 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
      */
     private final ArrayList<BinaryExpr> elseBuilder = new ArrayList<>();
 
+    private String classPath = "";
+
     /**
      * Used to get the number of logging statements issued
      *
@@ -29,6 +36,29 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
      */
     public int getIdCounter() {
         return idCounter;
+    }
+
+    @Override
+    public Visitable visit(MethodDeclaration n, Void arg) {
+        n.addParameter(MethodLogger.class, "methodLogger");
+        return super.visit(n, arg);
+    }
+
+    @Override
+    public Visitable visit(CompilationUnit n, Void arg) {
+        n.addImport(BinaryExpr.class.getCanonicalName());
+        n.getPackageDeclaration().ifPresent(pkg -> classPath = pkg.getNameAsString()+".");
+        return super.visit(n, arg);
+    }
+
+    @Override
+    public Visitable visit(ClassOrInterfaceDeclaration n, Void arg) {
+        classPath +=n.getNameAsString();
+        return super.visit(n, arg);
+    }
+
+    public String getClassPath() {
+        return classPath;
     }
 
     /***
@@ -122,7 +152,7 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
             //Base case - one there are no more ANDs or ORs we have pure logical conditions (i.e <,>,!=,==, and so on)
         } else {
             BinaryExpr condition = invert ? invertExpression(e) : e;
-            String insert = "log(" + idCounter + "," + condition.getLeft().toString()
+            String insert = "methodLogger.log(" + idCounter + "," + condition.getLeft().toString()
                     + "," + condition.getRight().toString() + ",BinaryExpr.Operator." + condition.getOperator().name() + ")";
             Expression expressionCondition = StaticJavaParser.parseExpression(insert);
             idCounter++;
@@ -131,7 +161,7 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
     }
 
     private Statement getLogStatement() {
-        String insert = "log(" + idCounter + ");";
+        String insert = "methodLogger.log(" + idCounter + ");";
         Statement statementLog = StaticJavaParser.parseStatement(insert);
         idCounter++;
         return statementLog;

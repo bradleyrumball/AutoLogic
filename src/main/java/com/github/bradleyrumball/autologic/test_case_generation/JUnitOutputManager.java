@@ -15,13 +15,19 @@ public class JUnitOutputManager {
     //Element schema =
 
     private ArrayList<Individual> conditions;
+    private final String classPath;
+    private final String className;
+    private final String methodName;
 
     /**
      * Constructor for Junit Manager
      * @param conditions array list of individuals
      */
-    public JUnitOutputManager(ArrayList<Individual> conditions) {
+    public JUnitOutputManager(ArrayList<Individual> conditions, String classPath, String className, String methodName) {
         this.conditions = conditions;
+        this.classPath = classPath;
+        this.className = className;
+        this.methodName = methodName;
     }
 
     /***
@@ -31,7 +37,7 @@ public class JUnitOutputManager {
      * @param outputPath Where the file is going to be placed
      * @throws IOException
      */
-    public static void generate(List<OutputElement> input, String outputPath) throws IOException {
+    public void generate(List<OutputElement> input, String outputPath) throws IOException {
         Set<String> imports = new HashSet<>();
         baseImports(imports);
 
@@ -58,7 +64,9 @@ public class JUnitOutputManager {
 
         // Add the paths and make it compilable
         Path path = Paths.get(outputPath);
-        header.append("\npublic class " + path.toFile().getName().replace(".java", "") + " {\n");
+        path.toFile().mkdirs();
+        path.resolve(className+methodName+"Test.java");
+        header.append("\npublic class " + className+methodName+"Test" + " {\n");
         footer.append("}");
 
         // Write it all out...
@@ -84,13 +92,13 @@ public class JUnitOutputManager {
                 System.out.println(gene);
                 inputs.add(String.valueOf(gene));
             }
-            String[] imports = {"com.github.bradleyrumball.autologic.Triangle"};
-            o.add(new OutputElement("Triangle.classify",inputs, String.valueOf(condition.getMethodReturnValue()), Arrays.asList(imports)));
+            String[] imports = {classPath};
+            o.add(new OutputElement(methodName,inputs, String.valueOf(condition.getMethodReturnValue()), Arrays.asList(imports)));
         }
 
 
         try {
-            generate(o, "src"+ File.separator + "test"+ File.separator + "java"+ File.separator + "com"+ File.separator + "github"+ File.separator + "bradleyrumball"+ File.separator + "autologic"+ File.separator + "test.java");
+            generate(o, "src"+ File.separator + "test"+ File.separator + "java"+ File.separator + "com"+ File.separator + "github"+ File.separator + "bradleyrumball"+ File.separator + "autologic"+ File.separator);
         } catch (IOException e) {
             e.printStackTrace();
         }
