@@ -3,13 +3,13 @@ package com.github.bradleyrumball.autologic;
 import java.util.*;
 public class FizzBuzz
 {
-    public void fizzbuzz(int i)
+    public void fizzbuzz()
     {
         int n = 100;
 
         // loop for 100 times
-//        for (int i=1; i<=n; i++)
-//        {
+        for (int i=1; i<=n; i++)
+        {
             //number divisible by 15(divisible by
             // both 3 & 5), print 'FizzBuzz' in
             // place of the number
@@ -27,6 +27,6 @@ public class FizzBuzz
 
             else // print the numbers
                 System.out.print(i+" ");
-//        }
+        }
     }
 }

@@ -16,123 +16,140 @@ import java.util.Arrays;
 public class Individual {
 
 
+    /**
+     * Genes represent the parameters that are going into the method
+     */
+    private final int[] genes;
 
+    /**
+     * The current fitness of the individual
+     * <p>
+     * Worst fitness is determined as Integer.Max
+     * Ideal fitness is 0
+     */
+    private double fitness = Integer.MAX_VALUE;
 
-  /**
-   * Genes represent the parameters that are going into the method
-   */
-  private final int[] genes;
+    /**
+     * The current branch that an individual is targeting
+     */
+    private int currentBranch;
 
-  /**
-   * The current fitness of the individual
-   *
-   * Worst fitness is determined as Integer.Max
-   * Ideal fitness is 0
-   */
-  private long fitness = Integer.MAX_VALUE;
+    /**
+     * The value that the method under test returns once the individual has been executed on it
+     */
+    private Object methodReturnValue;
 
-  private int currentBranch;
+    /**
+     * The method that is under test
+     */
+    private final Method method;
 
-  private Object methodReturnValue;
-
-  private final Method method;
-
-  /**
-   * Constructor, individuals are created with their initial gene pool set
-   * such that all genes are equal, this is because it is time consuming for
-   * the GA to create a case where multiple parameters are equal
-   */
-  public Individual(Method method, Integer currentBranch) {
-    this.genes = new int[method.getParameterCount()-1];
-    this.currentBranch = currentBranch;
-    this.method = method;
-    int starter = new SecureRandom().nextInt();
-    Arrays.fill(genes, starter);
-  }
-
-  /**
-   * Getter for individual gene
-   * @param id the if of the individual gene that we wish to return
-   * @return value of individual gene/param
-   */
-  protected int getGene(int id) {
-    return genes[id];
-  }
-
-  /**
-   * Getter for all genes
-   * @return array of genes
-   */
-  public int[] getGenes(){ return genes; }
-
-  /**
-   * Return the number of genes that each individual carries
-   * @return
-   */
-  protected int getGeneCount() {
-    return genes.length;
-  }
-
-  /**
-   * Allows a gene to be set individually
-   * Can be used by crossover/mutate for example
-   * @param geneID The ID of the gene that you wish to set
-   * @param geneValue The value that you wish to set the gene to
-   */
-  protected void setGene(int geneID, int geneValue) {
-    genes[geneID] = geneValue;
-    // If a gene has been updated or set its fitness scores must be restarted
-    fitness = Integer.MAX_VALUE;
-  }
-
-  /**
-   * Call back to host to get the fitness of the current individual if it hasn't already been
-   * calculated.
-   * @return int - fitness value of the individual
-   */
-  public long getFitness() {
-    Object[] inputParams = new Object[genes.length+1];
-    for (int i = 0; i < genes.length; i++) {
-      inputParams[i] = genes[i];
+    /**
+     * Constructor, individuals are created with their initial gene pool set
+     * such that all genes are equal, this is because it is time consuming for
+     * the GA to create a case where multiple parameters are equal
+     *
+     * @param method        - the method under test
+     * @param currentBranch - the current branch number the individual is to test for
+     */
+    public Individual(Method method, Integer currentBranch) {
+        this.genes = new int[method.getParameterCount() - 1];
+        this.currentBranch = currentBranch;
+        this.method = method;
+        int starter = new SecureRandom().nextInt();
+        Arrays.fill(genes, starter);
     }
 
-    MethodLogger methodLogger = new MethodLogger(currentBranch);
-    inputParams[inputParams.length-1] = methodLogger;
-
-    try {
-      methodReturnValue = method.invoke(null, inputParams);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (InvocationTargetException e) {
-      e.printStackTrace();
+    /**
+     * Getter for individual gene
+     *
+     * @param id the if of the individual gene that we wish to return
+     * @return value of individual gene/param
+     */
+    protected int getGene(int id) {
+        return genes[id];
     }
 
-    fitness = methodLogger.getFitness();
+    /**
+     * Getter for all genes
+     *
+     * @return array of genes
+     */
+    public int[] getGenes() {
+        return genes;
+    }
 
-    return fitness;
-  }
+    /**
+     * Return the number of genes that each individual carries
+     *
+     * @return
+     */
+    protected int getGeneCount() {
+        return genes.length;
+    }
 
-  /**
-   * Calls back to the host to run the class under test and get the expected output that will be used
-   * in the methodReturnValue
-   * @return Object (the return type of the method under test)
-   */
-  public Object getMethodReturnValue() {
-    return methodReturnValue;
-  }
+    /**
+     * Allows a gene to be set individually
+     * Can be used by crossover/mutate for example
+     *
+     * @param geneID    The ID of the gene that you wish to set
+     * @param geneValue The value that you wish to set the gene to
+     */
+    protected void setGene(int geneID, int geneValue) {
+        genes[geneID] = geneValue;
+        // If a gene has been updated or set its fitness scores must be restarted
+        fitness = Integer.MAX_VALUE;
+    }
 
-  /**
-   * For debugging more than anything
-   * @return The individual as a string
-   */
-  @Override
-  public String toString() {
-    String[] genesString = Arrays.stream(genes)
-            .mapToObj(String::valueOf)
-            .toArray(String[]::new);
-    return ("Input Params: " + Arrays.toString(genesString) + " | Fitness: " + fitness+ " | Method Out: "+ getMethodReturnValue() +"\n");
-  }
+    /**
+     * Call back to host to get the fitness of the current individual if it hasn't already been
+     * calculated.
+     *
+     * @return int - fitness value of the individual
+     */
+    public double getFitness() {
+        Object[] inputParams = new Object[genes.length + 1];
+        for (int i = 0; i < genes.length; i++) {
+            inputParams[i] = genes[i];
+        }
 
+        MethodLogger methodLogger = new MethodLogger(currentBranch);
+        inputParams[inputParams.length - 1] = methodLogger;
 
+        try {
+            methodReturnValue = method.invoke(null, inputParams);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        fitness = methodLogger.getFitness();
+
+        return fitness;
+    }
+
+    /**
+     * Calls back to the host to run the class under test and get the expected output that will be used
+     * in the methodReturnValue
+     *
+     * @return Object (the return type of the method under test)
+     */
+    public Object getMethodReturnValue() {
+        return methodReturnValue;
+    }
+
+    /**
+     * For debugging more than anything
+     *
+     * @return The individual as a string
+     */
+    @Override
+    public String toString() {
+        String[] genesString = Arrays.stream(genes)
+                .mapToObj(String::valueOf)
+                .toArray(String[]::new);
+        return ("Input Params: " + Arrays.toString(genesString) + " | Fitness: " + fitness + " | Method Out: " + getMethodReturnValue() + "\n");
+    }
 
 }

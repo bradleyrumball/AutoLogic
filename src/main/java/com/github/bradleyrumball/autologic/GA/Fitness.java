@@ -11,11 +11,11 @@ public class Fitness {
   /**
    * Left argument to a condition
    */
-  private final long left;
+  private final double left;
   /**
    * Right argument to a condition
    */
-  private final long right;
+  private final double right;
   /**
    * The operator of a conditional expression
    */
@@ -32,7 +32,7 @@ public class Fitness {
    * @param operator operator of condition
    * @param K A small positive value
    */
-  public Fitness (long left, long right, Operator operator, int K) {
+  public Fitness (double left, double right, Operator operator, int K) {
     this.left = left;
     this.right = right;
     this.operator = operator;
@@ -45,7 +45,7 @@ public class Fitness {
    * @param right right side of condition
    * @param operator operator of condition
    */
-  public Fitness (long left, long right , Operator operator) {
+  public Fitness (double left, double right , Operator operator) {
     this(left, right, operator, 1);
   }
 
@@ -53,8 +53,8 @@ public class Fitness {
    * Condition type a == b
    * @return fitness score 0 if condition met else |a-b|+K
    */
-  private long equal() {
-    long score = Math.abs(left - right);
+  private double equal() {
+    double score = Math.abs(left - right);
     if (score == 0) return 0;
     else return score+K;
   }
@@ -63,8 +63,8 @@ public class Fitness {
    * Condition type a != b
    * @return fitness score 0 if condition met else K
    */
-  private long notEqual() {
-    long score = Math.abs(left - right);
+  private double notEqual() {
+    double score = Math.abs(left - right);
     if (score != 0) return 0;
     else return K;
   }
@@ -73,8 +73,8 @@ public class Fitness {
    * Condition type a < b
    * @return fitness score 0 if condition met else a-b+k
    */
-  private long lessThan() {
-    long score = left - right;
+  private double lessThan() {
+    double score = left - right;
     if (score < 0) return 0;
     else return score + K;
   }
@@ -83,8 +83,8 @@ public class Fitness {
    * Condition type a <= b
    * @return fitness score 0 if condition met else a-b+k
    */
-  private long lessThanEqualTo() {
-    long score = left - right;
+  private double lessThanEqualTo() {
+    double score = left - right;
     if (score <= 0) return 0;
     else return score + K;
   }
@@ -93,8 +93,8 @@ public class Fitness {
    * Condition type a > b
    * @return fitness score 0 if condition met else b-a+k
    */
-  private long greaterThan() {
-    long score = right - left;
+  private double greaterThan() {
+    double score = right - left;
     if (score < 0) return 0;
     else return score + K;
   }
@@ -103,8 +103,8 @@ public class Fitness {
    * Condition type a >= b
    * @return fitness score 0 if condition met else b-a+k
    */
-  private long greaterThanEqualTo() {
-    long score = right - left;
+  private double greaterThanEqualTo() {
+    double score = right - left;
     if (score <= 0) return 0;
     else return score + K;
   }
@@ -114,7 +114,7 @@ public class Fitness {
    * @return int - the fitness of the condition provided to the instance
    * @throws Exception Annoying exception because I used a switch statement
    */
-  public long getFitness() throws Exception {
+  public double getFitness() throws Exception {
     switch(operator) {
       case EQUALS: return equal();
       case NOT_EQUALS: return notEqual();

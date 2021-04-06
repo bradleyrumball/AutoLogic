@@ -39,9 +39,10 @@ public class Host {
 
     /**
      * Constructor for host
-     * @param methods list of all methods in a class that we are going to test
+     *
+     * @param methods          list of all methods in a class that we are going to test
      * @param numberOfBranches map of number of branches against a method
-     * @param classPath the path of the class under test
+     * @param classPath        the path of the class under test
      */
     public Host(List<Method> methods, Map<String, Integer> numberOfBranches, String classPath) {
         this.methods = methods;
@@ -57,7 +58,7 @@ public class Host {
             ArrayList<Individual> solutions = new ArrayList<>();
             for (int i = 0; i < numberOfBranches.getOrDefault(method.getName(), 0); i++) {
                 Population population = new Population(50, method, i); //50
-                long populationFitness = population.getFittest().getFitness();
+                double populationFitness = population.getFittest().getFitness();
                 while (populationFitness > 0) {
 //                System.out.println("Generation: " + generation + " Current fitness: " + populationFitness);
                     population = evolvePopulation(population, method, i);
@@ -76,8 +77,8 @@ public class Host {
     /**
      * Once a population has been evaluated we evolve it by crossover and mutation
      *
-     * @param population the population that has just been tested for fitness
-     * @param method the method under test
+     * @param population    the population that has just been tested for fitness
+     * @param method        the method under test
      * @param currentBranch the current branch that we are testing
      * @return population - a new population that contains hopefully better individuals
      */
@@ -126,9 +127,9 @@ public class Host {
      * from two parent individuals. This is done on a gene by gene (parameter by parameter basis)
      * Crossover bias can manipulate the breeding process
      *
-     * @param individualA parent A of the new individual
-     * @param individualB parent B of the new individual
-     * @param method current method under test
+     * @param individualA   parent A of the new individual
+     * @param individualB   parent B of the new individual
+     * @param method        current method under test
      * @param currentBranch the current branch that we are getting fitness for
      * @return a child of A and B
      */

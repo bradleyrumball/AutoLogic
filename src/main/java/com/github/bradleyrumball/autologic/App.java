@@ -14,6 +14,9 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * MAIN APPLICATION ENTRY POINT
+ */
 public class App {
 
   /**
@@ -39,11 +42,13 @@ public class App {
    * @throws ClassNotFoundException bad things
    */
   public static void main(String[] args) throws FileNotFoundException, ClassNotFoundException {
+    // get the compilation unit of the class under test
     CompilationUnit instrumentedClass = getCU("src/main/resources/classundertest/Triangle.java");
 
     // inject CU with log statements on ifs
     MethodUnderTestVisitor methodUnderTestVisitor = new MethodUnderTestVisitor();
     instrumentedClass.accept(methodUnderTestVisitor, null);
+    System.out.println(instrumentedClass);
 
     // to be used as final static variable in Host
     Map<String, Integer> numberOfBranches = methodUnderTestVisitor.getIdCounters();

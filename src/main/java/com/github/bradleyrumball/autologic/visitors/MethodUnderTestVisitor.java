@@ -73,15 +73,10 @@ public class MethodUnderTestVisitor extends ModifierVisitor<MethodDeclaration> {
     @Override
     public IfStmt visit(IfStmt n, MethodDeclaration arg) {
         //Check if the current IF statement that we are visiting as already been injected with log statements
-        //System.out.println(n);
+
         BinaryExpr conditionExpression = n.getCondition().asBinaryExpr().clone();
         n.setCondition(getLogStatement(arg, n.getCondition().asBinaryExpr(), false));
-        // Add the current visitor condition to the list of conditions for constructing the else branch
-//        elseBuilder.add(conditionExpression.clone());
-//        }
-//
-//
-//        // For the IF's else branch...
+
         // For else statements ...
         n.getElseStmt().ifPresent(stmt -> {
             if (stmt.isBlockStmt()) {
@@ -113,31 +108,6 @@ public class MethodUnderTestVisitor extends ModifierVisitor<MethodDeclaration> {
     }
 
     /**
-     * Used to build the else condition
-     * As our GA will need to track else branches for full branch coverage and full condition coverage
-     * we construct a condition set for the else branch which is based on De Morgan's laws.
-     * The conditions from all ifs and if-else's in a block are taken; their logical operators are
-     * replaced with the logical complement. If there is a chain of conditions the && or || are again swapped
-     *
-     * @return Logged else expression
-     */
-//    @Deprecated
-//    private Expression buildElse() {
-//        StringBuilder combined = new StringBuilder();
-//        // Combine all conditions into one singular string and join conditions with &&
-//        for (int i = 0; i < elseBuilder.size(); i++) {
-//            // Else generator returns the logging statements for each condition with De Morgans applied
-//            combined.append("(").append(getLogStatement(elseBuilder.get(i), true).toString()).append(")");
-//            if (i != elseBuilder.size() - 1) combined.append(" && ");
-//        }
-//        // Parse the string to create an Expression object that can be used as a new if condition
-//        Expression polishedElse = StaticJavaParser.parseExpression(combined.toString());
-//        // Else builder must be cleared to allow later if blocks to build else's without conflict
-//        elseBuilder.clear();
-//        return polishedElse;
-//    }
-
-    /**
      * Used to transform a logical condition into a logging statement
      * Can handle chained conditions such as those combined with && or || as it is recursive
      *
@@ -165,6 +135,11 @@ public class MethodUnderTestVisitor extends ModifierVisitor<MethodDeclaration> {
         }
     }
 
+    /**
+     * Get logging statement when there are no conditions
+     * @param method
+     * @return
+     */
     private Statement getLogStatement(MethodDeclaration method) {
         idCounter.compute(method.getNameAsString(), (k, v) -> {
             if (v == null) return 1;

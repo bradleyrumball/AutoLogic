@@ -8,22 +8,37 @@ import com.github.javaparser.ast.expr.BinaryExpr;
  */
 public class MethodLogger {
 
-    private long fitness = Integer.MAX_VALUE;
+    private double fitness = Integer.MAX_VALUE;
     private int currentBranch;
 
-
+    /**
+     * Constructor for method logger
+     * @param currentBranch the current branch that we are logging fitness for
+     */
     public MethodLogger(int currentBranch){
         this.currentBranch = currentBranch;
     }
 
 
-    public long getFitness() {
+    /**
+     * Return the current fitness for the current branch
+     * @return
+     */
+    public double getFitness() {
         return fitness;
     }
 
-    public boolean log(int id, long left, long right, BinaryExpr.Operator operator) {
+    /**
+     * Logging statement called by instrumented method when conditions are involved
+     * @param id log statement id (branch id)
+     * @param left left hand condition
+     * @param right right hand condition
+     * @param operator operator of the condition
+     * @return the evaluation of the condition
+     */
+    public boolean log(int id, double left, double right, BinaryExpr.Operator operator) {
         Fitness f = new Fitness(left, right, operator);
-        long fScore = Integer.MAX_VALUE;
+        double fScore = Integer.MAX_VALUE;
         try {
             fScore = f.getFitness();
         } catch (Exception e) {
@@ -36,6 +51,11 @@ public class MethodLogger {
         return fScore == 0;
     }
 
+    /**
+     * Logging statment for when we are logging a branch and there are no conditions to pass
+     * @param id log statement id (branch id)
+     * @return true - could return void
+     */
     public boolean log(int id){
         if (id == currentBranch) fitness = 0;
         return true;

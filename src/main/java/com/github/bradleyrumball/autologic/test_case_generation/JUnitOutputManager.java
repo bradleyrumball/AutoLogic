@@ -11,9 +11,6 @@ import java.util.*;
 
 public class JUnitOutputManager {
 
-    //input schema = List<Element>
-    //Element schema =
-
     private ArrayList<Individual> conditions;
     private final String classPath;
     private final String className;
@@ -21,6 +18,7 @@ public class JUnitOutputManager {
 
     /**
      * Constructor for Junit Manager
+     *
      * @param conditions array list of individuals
      */
     public JUnitOutputManager(ArrayList<Individual> conditions, String classPath, String className, String methodName) {
@@ -51,10 +49,10 @@ public class JUnitOutputManager {
             body.append("\t@Test\n\tpublic void test" + testNum + "() {\n");
             body.append(output.createTestString());
             body.append("\t}\n\n");
-            for(String i : output.getImports()) {
+            for (String i : output.getImports()) {
                 imports.add(i);
             }
-            testNum ++;
+            testNum++;
         }
 
         // Add the imports needed
@@ -65,8 +63,8 @@ public class JUnitOutputManager {
         // Add the paths and make it compilable
         Path path = Paths.get(outputPath);
         path.toFile().mkdirs();
-        path = path.resolve(className+methodName+"Test.java");
-        header.append("\npublic class " + className+methodName+"Test" + " {\n");
+        path = path.resolve(className + methodName + "Test.java");
+        header.append("\npublic class " + className + methodName + "Test" + " {\n");
         footer.append("}");
 
         // Write it all out...
@@ -93,12 +91,12 @@ public class JUnitOutputManager {
                 inputs.add(String.valueOf(gene));
             }
             String[] imports = {classPath};
-            o.add(new OutputElement(methodName,inputs, String.valueOf(condition.getMethodReturnValue()), Arrays.asList(imports)));
+            o.add(new OutputElement(methodName, inputs, String.valueOf(condition.getMethodReturnValue()), Arrays.asList(imports)));
         }
 
 
         try {
-            generate(o, "src"+ File.separator + "test"+ File.separator + "java"+ File.separator + "com"+ File.separator + "github"+ File.separator + "bradleyrumball"+ File.separator + "autologic"+ File.separator);
+            generate(o, "src" + File.separator + "test" + File.separator + "java" + File.separator + "com" + File.separator + "github" + File.separator + "bradleyrumball" + File.separator + "autologic" + File.separator);
         } catch (IOException e) {
             e.printStackTrace();
         }
