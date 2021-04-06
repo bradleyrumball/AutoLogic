@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 public class IndividualTest {
 
@@ -37,9 +36,8 @@ public class IndividualTest {
    */
   @Test
   public void setGene() {
-    long oldFitness = individual.getFitness();
     individual.setGene(0, 1);
     long newFitness = individual.getFitness();
-    assertNotEquals(oldFitness, newFitness);
+    assertEquals(Integer.MAX_VALUE, newFitness);
   }
 }
