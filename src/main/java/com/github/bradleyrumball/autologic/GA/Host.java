@@ -7,32 +7,12 @@ import java.lang.reflect.Method;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controls the main execution of the GA
  */
 public class Host {
-    /**
-     * Temp
-     * This is the number of branches that can possibly execute in the method under test
-     * This should be calculated when the method is parsed and instrumented
-     */
-//    private static final int NUMBER_OF_BRANCHES = 14;
-
-    /**
-     * Number of params for the method (For triangle this is three (Side1, Side2, Side3)
-     */
-//    public static final int NUMBER_OF_GENES = 3;
-
-    /**
-     * The current branch that the GA is attempting to obtain solutions for
-     */
-//    private int currentBranch;
-    /**
-     * The fitness of an individual that has been run
-     * This value is used as a handler between log, getFitness and handing back to the individual class
-     */
-//    private long currentFitness;
 
     /**
      * The rate (0->1) that we which to mutate individuals in the population at
@@ -54,15 +34,20 @@ public class Host {
 
 
     private final List<Method> methods;
-    private final int numberOfBranches;
+    private final Map<String, Integer> numberOfBranches;
     private final String classPath;
 
-    public Host(List<Method> methods, int numberOfBranches, String classPath) {
+    /**
+     * Constructor for host
+     * @param methods list of all methods in a class that we are going to test
+     * @param numberOfBranches map of number of branches against a method
+     * @param classPath the path of the class under test
+     */
+    public Host(List<Method> methods, Map<String, Integer> numberOfBranches, String classPath) {
         this.methods = methods;
         this.numberOfBranches = numberOfBranches;
         this.classPath = classPath;
     }
-
 
     /**
      * Runs the GA - probably should be abstracted to another class
@@ -70,7 +55,7 @@ public class Host {
     public void run() {
         for (Method method : methods) {
             ArrayList<Individual> solutions = new ArrayList<>();
-            for (int i = 0; i < numberOfBranches; i++) {
+            for (int i = 0; i < numberOfBranches.getOrDefault(method.getName(), 0); i++) {
                 Population population = new Population(50, method, i); //50
                 long populationFitness = population.getFittest().getFitness();
                 while (populationFitness > 0) {
@@ -83,7 +68,7 @@ public class Host {
 
             }
             System.out.println("Solutions found for all");
-            JUnitOutputManager jUnitGenerator = new JUnitOutputManager(solutions, classPath, method.getDeclaringClass().toString(), method.getName());
+            JUnitOutputManager jUnitGenerator = new JUnitOutputManager(solutions, classPath, method.getDeclaringClass().getSimpleName(), method.getName());
             jUnitGenerator.unitGenerator();
         }
     }
@@ -92,6 +77,8 @@ public class Host {
      * Once a population has been evaluated we evolve it by crossover and mutation
      *
      * @param population the population that has just been tested for fitness
+     * @param method the method under test
+     * @param currentBranch the current branch that we are testing
      * @return population - a new population that contains hopefully better individuals
      */
     public Population evolvePopulation(Population population, Method method, int currentBranch) {
@@ -141,6 +128,8 @@ public class Host {
      *
      * @param individualA parent A of the new individual
      * @param individualB parent B of the new individual
+     * @param method current method under test
+     * @param currentBranch the current branch that we are getting fitness for
      * @return a child of A and B
      */
     private Individual crossover(Individual individualA, Individual individualB, Method method, int currentBranch) {
@@ -180,65 +169,4 @@ public class Host {
         }
     }
 
-//    /**
-//     * Called by the Individual class the run its gene pool on the instrumented class
-//     * returns the fitness produced by the individual
-//     * @param individual the individual to test the class with
-//     * @return fitness of individual
-//     */
-//    protected long getFitness(Individual individual) {
-//        currentFitness = Integer.MAX_VALUE;
-//        instrumentedMethod(individual.getGene(0), individual.getGene(1), individual.getGene(2));
-//
-//        return currentFitness;
-//    }
-//
-//    /**
-//     * Called by the individual class, an individuals gene pool is run on the method this allows us to obtain the
-//     * expected value of a junit test
-//     * @param individual the individual to test the class with
-//     * @return the output from the class under test
-//     */
-//    protected Object getMethodReturn(Individual individual) {
-//        return instrumentedMethod(individual.getGene(0), individual.getGene(1), individual.getGene(2));
-//    }
-
-    /**
-     * Logging method from instrumented class
-     * @param id the current branch
-     * @param left the parameter on the left side of the operator
-     * @param right the parameter on the right side of the operator
-     * @param operator the operator in the condition between left and right
-     * @return the boolean output of the condition once evaluated
-     */
-//    private static boolean log(int id, long left, long right, BinaryExpr.Operator operator) {
-//        Fitness f = new Fitness(left, right, operator);
-//        long fScore = Integer.MAX_VALUE;
-//        try {
-//            fScore = f.getFitness();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        // We only set set the fitness value if the current branch is the one we are testing
-//        if(id==currentBranch) {
-//            currentFitness = fScore;
-////            System.out.println("id: "+id+", left: "+left+", right: "+right+", OP: "+operator+", Fit:"+currentFitness);
-//        }
-//        // to continue with execution
-//        return fScore == 0;
-//    }
-//
-//    private static boolean log(int id){
-//        int fScore = 0;
-//
-//        if (id == currentBranch) currentFitness = fScore;
-//
-//        return fScore==0;
-//    }
-//
-//
-//    private static Object instrumentedMethod(Object...var) {
-//        return null;
-//    }
 }

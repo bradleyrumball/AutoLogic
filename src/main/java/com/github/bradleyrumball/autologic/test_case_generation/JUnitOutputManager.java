@@ -65,7 +65,7 @@ public class JUnitOutputManager {
         // Add the paths and make it compilable
         Path path = Paths.get(outputPath);
         path.toFile().mkdirs();
-        path.resolve(className+methodName+"Test.java");
+        path = path.resolve(className+methodName+"Test.java");
         header.append("\npublic class " + className+methodName+"Test" + " {\n");
         footer.append("}");
 

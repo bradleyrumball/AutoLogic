@@ -3,6 +3,9 @@ package com.github.bradleyrumball.autologic.logging;
 import com.github.bradleyrumball.autologic.GA.Fitness;
 import com.github.javaparser.ast.expr.BinaryExpr;
 
+/**
+ * Class to control logging of methods and fitness handlign
+ */
 public class MethodLogger {
 
     private long fitness = Integer.MAX_VALUE;

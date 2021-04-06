@@ -1,15 +1,15 @@
 package com.github.bradleyrumball.autologic;
 // Java program to print Fizz Buzz
 import java.util.*;
-class FizzBuzz
+public class FizzBuzz
 {
-    public static void main(String args[])
+    public void fizzbuzz(int i)
     {
         int n = 100;
 
         // loop for 100 times
-        for (int i=1; i<=n; i++)
-        {
+//        for (int i=1; i<=n; i++)
+//        {
             //number divisible by 15(divisible by
             // both 3 & 5), print 'FizzBuzz' in
             // place of the number
@@ -27,6 +27,6 @@ class FizzBuzz
 
             else // print the numbers
                 System.out.print(i+" ");
-        }
+//        }
     }
 }
