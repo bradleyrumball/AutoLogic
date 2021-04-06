@@ -14,7 +14,7 @@ Team:
 #### Analysis of the Method Under Test ####
 - [ ] Requires significant manual input 😟/😭
 - [ ] Requires some manual input, partial automated support 🙂/😐
-- [ ] Method under test fully parsed, with conditions and structure of predicates extracted and analysed 😁
+- [X] Method under test fully parsed, with conditions and structure of predicates extracted and analysed 😁
 
 #### Test Requirement Generation ####
 - [X] Simple coverage criterion implemented (e.g., Condition Coverage) 😟/😭
@@ -24,7 +24,7 @@ Team:
 #### Instrumentation ####
 - [ ] Supplies a simple API that is applied within code blocks 😟/😭
 - [ ] Supplies an advanced API that is applied within conditions 🙂/😐
-- [ ] Method under test is automatically parsed and intrumented 😁
+- [X] Method under test is automatically parsed and intrumented 😁
 
 #### Test Data Generation ####
 - [ ] Very basic random number generation 😭
@@ -38,7 +38,7 @@ Team:
 - [ ] Coverage  level  computed  and  individual  uncovered  elements  re-ported 😁/🙂
 
 #### Test Suite Output ####
-- [x] Simple output of inputs to the command line 😐/😟/😭
+- [ ] Simple output of inputs to the command line 😐/😟/😭
 - [x] Writes out JUnit Java code that can be compiled separately and run 😁/🙂
 
 #### GitHub Repo andREADME.md ####
