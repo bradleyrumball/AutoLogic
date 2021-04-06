@@ -1,7 +1,7 @@
 package com.github.bradleyrumball.autologic;
 // Java program to print Fizz Buzz
 import java.util.*;
-class FizzBuzz
+public class FizzBuzz
 {
     public static void main(String args[])
     {

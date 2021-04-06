@@ -1,5 +1,6 @@
 package com.github.bradleyrumball.autologic.GA;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class Population {
@@ -10,23 +11,24 @@ public class Population {
    */
   private ArrayList<Individual> individuals;
 
+
   /**
    * Constructor that will create population of individuals
    * @param populationSize the size of the population to create
    */
-  public Population(int populationSize) {
+  public Population(int populationSize, Method method, int currentBranch) {
     individuals = new ArrayList<>();
-    for (int i = 0; i < populationSize; i++) individuals.add(i, new Individual());
+    for (int i = 0; i < populationSize; i++) individuals.add(i, new Individual(method, currentBranch));
   }
 
-  /**
-   * Constructor for when we want to create an empty population
-   * This is used for new populations that are constructed manually
-   * from mutation and crossover etc
-   */
-  public Population() {
-    this(0);
-  }
+//  /**
+//   * Constructor for when we want to create an empty population
+//   * This is used for new populations that are constructed manually
+//   * from mutation and crossover etc
+//   */
+//  public Population(int currentBranch) {
+//    this(0, currentBranch);
+//  }
 
   /**
    * Getter for all individuals in the population

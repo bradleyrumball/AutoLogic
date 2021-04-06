@@ -1,6 +1,10 @@
 package com.github.bradleyrumball.autologic.GA;
 
 
+import com.github.bradleyrumball.autologic.logging.MethodLogger;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
@@ -17,7 +21,7 @@ public class Individual {
   /**
    * Genes represent the parameters that are going into the method
    */
-  private final int[] genes = new int[Host.NUMBER_OF_GENES];
+  private final int[] genes;
 
   /**
    * The current fitness of the individual
@@ -27,16 +31,23 @@ public class Individual {
    */
   private long fitness = Integer.MAX_VALUE;
 
+  private int currentBranch;
+
   private Object methodReturnValue;
+
+  private final Method method;
 
   /**
    * Constructor, individuals are created with their initial gene pool set
    * such that all genes are equal, this is because it is time consuming for
    * the GA to create a case where multiple parameters are equal
    */
-  public Individual() {
+  public Individual(Method method, Integer currentBranch) {
+    this.genes = new int[method.getParameterCount()-1];
+    this.currentBranch = currentBranch;
+    this.method = method;
     int starter = new SecureRandom().nextInt();
-    for (int i = 0; i < genes.length; i++) genes[i] = starter;
+    Arrays.fill(genes, starter);
   }
 
   /**
@@ -59,7 +70,7 @@ public class Individual {
    * @return
    */
   protected int getGeneCount() {
-    return Host.NUMBER_OF_GENES;
+    return genes.length;
   }
 
   /**
@@ -80,7 +91,24 @@ public class Individual {
    * @return int - fitness value of the individual
    */
   public long getFitness() {
-    if (fitness == Integer.MAX_VALUE) fitness = Host.getFitness(this);
+    Object[] inputParams = new Object[genes.length+1];
+    for (int i = 0; i < genes.length; i++) {
+      inputParams[i] = genes[i];
+    }
+
+    MethodLogger methodLogger = new MethodLogger(currentBranch);
+    inputParams[inputParams.length-1] = methodLogger;
+
+    try {
+      methodReturnValue = method.invoke(null, inputParams);
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    }
+
+    fitness = methodLogger.getFitness();
+
     return fitness;
   }
 
@@ -90,7 +118,6 @@ public class Individual {
    * @return Object (the return type of the method under test)
    */
   public Object getMethodReturnValue() {
-    /*if (methodReturnValue == null)*/ methodReturnValue= Host.getMethodReturn(this);
     return methodReturnValue;
   }
 
