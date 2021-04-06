@@ -1,7 +1,8 @@
 package com.github.bradleyrumball.autologic.visitors;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
 import com.github.javaparser.ast.visitor.Visitable;
@@ -16,23 +17,31 @@ public class HostVisitor extends ModifierVisitor<Void> {
     }
 
     @Override
-    public Visitable visit(ClassOrInterfaceDeclaration n, Void arg) {
-        MethodDeclaration method = n.addMethod("Name");
-        //Sets the type
-        method.setPrivate(true);
-        method.setStatic(true);
-        method.setType(Object.class);
-        // Adds parameters to the newly injected class
-        method.addParameter("int", "side1");
-        method.addParameter("int", "side2");
-        method.addParameter("int", "side3");
+    public Visitable visit(CompilationUnit n, Void arg) {
+        n.addImport("com.github.bradleyrumball.autologic.Triangle.Type");
+        return super.visit(n, arg);
+    }
 
-        //Seraches for method body within original cu
-        cu.accept(mv, null);
-        method.setBody(mv.body);
+    @Override
+    public Visitable visit(MethodDeclaration n, Void arg) {
+        if (n.getNameAsString().equals("instrumentedMethod")) {
 
-        super.visit(n,arg);
+            NodeList arguments = new NodeList();
 
+
+            // Adds parameters to the newly injected class
+            arguments.add(StaticJavaParser.parseParameter("int side1"));
+            arguments.add(StaticJavaParser.parseParameter("int side2"));
+            arguments.add(StaticJavaParser.parseParameter("int side3"));
+            n.setParameters(arguments);
+
+            //Seraches for method body within original cu
+            cu.accept(mv, null);
+            n.setBody(mv.body);
+
+            super.visit(n, arg);
+
+        }
         return n;
     }
 }

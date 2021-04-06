@@ -5,13 +5,12 @@ import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
 
 import java.util.ArrayList;
 
 public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
-
-    private boolean ignoreIf = false;
 
     /**
      * A counter to keep track of the id of the log statement injected
@@ -45,56 +44,34 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
         //System.out.println(n);
         BinaryExpr conditionExpression = n.getCondition().asBinaryExpr().clone();
         n.setCondition(getLogStatement(n.getCondition().asBinaryExpr(), false));
-            // Add the current visitor condition to the list of conditions for constructing the else branch
-            elseBuilder.add(conditionExpression.clone());
+        // Add the current visitor condition to the list of conditions for constructing the else branch
+//        elseBuilder.add(conditionExpression.clone());
 //        }
 //
-        if(!ignoreIf) {
 //
 //        // For the IF's else branch...
-            n.getElseStmt().ifPresent(stmt -> {
-                if (!stmt.isIfStmt()) {
-                    ignoreIf = true;
-                    BlockStmt elseBlock;
-                    if (!stmt.isBlockStmt()) {
-                        elseBlock = new BlockStmt();
-                        elseBlock.addStatement(stmt);
-                        n.setElseStmt(elseBlock);
-                    } else {
-                        elseBlock = stmt.asBlockStmt();
-                    }
+        // For else statements ...
+        n.getElseStmt().ifPresent(stmt -> {
+            if (stmt.isBlockStmt()) {
+                BlockStmt elseBlock = stmt.asBlockStmt();
 
-                    IfStmt ifStmt = new IfStmt();
-                    ifStmt.setCondition(invertExpression(conditionExpression));
-                    ifStmt.setThenStmt(elseBlock);
-
-                    n.setElseStmt(ifStmt);
-
-                }
-            });
-//
-////        if (n.hasElseBlock() && !n.getCondition().toString().contains("log")){
-////            n.hasElseBlock()
-////            buildElse();
-////        }
-//
-            if (!n.hasElseBlock() && !n.hasElseBranch()) {
-                IfStmt ifStmt = new IfStmt();
-                ifStmt.setCondition(invertExpression(conditionExpression));
-                ifStmt.setThenStmt(new BlockStmt());
-                n.setElseStmt(ifStmt);
-                ignoreIf = true;
+                elseBlock.getStatements().add(0, getLogStatement());
+                // If inline
+            } else if (!stmt.isIfStmt()) {
+                BlockStmt elseBlock = new BlockStmt();
+                n.setElseStmt(elseBlock);
+                elseBlock.addStatement(stmt);
+                elseBlock.getStatements().add(0, getLogStatement());
             }
-        } else {
-            ignoreIf = false;
+        });
+
+
+        if (!n.hasElseBlock() && !n.hasElseBranch()) {
+            BlockStmt block = new BlockStmt();
+            block.getStatements().add(getLogStatement());
+            n.setElseStmt(block);
         }
 
-
-
-        // Transform IF's condition to log statement
-//        if (!n.getCondition().toString().contains("log"))
-
-//        System.out.println("-->: "+n);
         // Recursion
         super.visit(n, arg);
 
@@ -112,6 +89,7 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
      *
      * @return Logged else expression
      */
+    @Deprecated
     private Expression buildElse() {
         StringBuilder combined = new StringBuilder();
         // Combine all conditions into one singular string and join conditions with &&
@@ -152,12 +130,20 @@ public class IfElseInjectionVisitor extends ModifierVisitor<Void> {
         }
     }
 
+    private Statement getLogStatement() {
+        String insert = "log(" + idCounter + ");";
+        Statement statementLog = StaticJavaParser.parseStatement(insert);
+        idCounter++;
+        return statementLog;
+    }
+
     /***
      * Helper function to invert operators - mainly used for else statements
      *
      * @param e A binary Expression
      * @return New Binary Expression
      */
+    @Deprecated
     private BinaryExpr invertExpression(BinaryExpr e) {
         BinaryExpr.Operator operator = null;
         switch (e.getOperator()) {

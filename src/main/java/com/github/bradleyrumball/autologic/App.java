@@ -1,13 +1,17 @@
 package com.github.bradleyrumball.autologic;
 
+import com.github.bradleyrumball.autologic.visitors.HostVisitor;
 import com.github.bradleyrumball.autologic.visitors.IfElseInjectionVisitor;
+import com.github.bradleyrumball.autologic.visitors.ParameterVisitor;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import net.openhft.compiler.CompilerUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 public class App {
 
@@ -27,14 +31,14 @@ public class App {
   }
 
 
-  public static <Host2> void main(String[] args) throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-    CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/FizzBuzz.java");
+  public static <Host> void main(String[] args) throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+    CompilationUnit classUnderTest = getCU("src/main/resources/classundertest/Triangle.java");
 
     // inject CU with log statements on ifs
     IfElseInjectionVisitor ifElseInjectionVisitor = new IfElseInjectionVisitor();
     classUnderTest.accept(ifElseInjectionVisitor, null);
     System.out.println(classUnderTest);
-    /*
+
     // to be used as final static variable in Host
     int numberOfBranches = ifElseInjectionVisitor.getIdCounter();
 
@@ -46,24 +50,38 @@ public class App {
     CompilationUnit host = getCU("src/main/java/com/github/bradleyrumball/autologic/GA/Host.java");
 
     //Inject into Host using JP
-    host.getClassByName("Host").ifPresent(cls -> {cls.setName("Host2");});
+    host.getClassByName("Host").ifPresent(cls -> {cls.setName("Host");});
     host.accept(new HostVisitor(classUnderTest), null);
-    Files.write(Paths.get("src/main/java/com/github/bradleyrumball/autologic/GA/Host2.java"), host.toString().getBytes());
 
-    //Compile Host
-    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-    compiler.run(null, null, null, Paths.get("src","main/java/com/github/bradleyrumball/autologic/GA/Host2.java").toString());
+    // Dodgy code
 
-    //Instance Host
-    URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { Paths.get("src","main/java/com/github/bradleyrumball/autologic/GA/Host2.java").toUri().toURL() });
-    Class<?> cls = Class.forName("com.github.bradleyrumball.autologic.GA.Host2", true, classLoader);
-    Host2 instance = (Host2)cls.newInstance();
-//    instance.run(null);
+    Class<?> clazz = CompilerUtils.CACHED_COMPILER.loadFromJava("com.github.bradleyrumball.autologic.GA.Host", host.toString());
+    try {
+      clazz.getMethod("run").invoke(null);
+    } catch (NoSuchMethodException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+
+
+//    -----
+
+
+//    Files.write(Paths.get("src/main/java/com/github/bradleyrumball/autologic/GA/Host.java"), host.toString().getBytes());
+//
+//    //Compile Host
+//    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+//    compiler.run(null, null, null, Paths.get("src","main/java/com/github/bradleyrumball/autologic/GA/Host.java").toString());
+//
+//    //Instance Host
+//    URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { Paths.get("src","main/java/com/github/bradleyrumball/autologic/GA/Host.java").toUri().toURL() });
+//    Class<?> cls = Class.forName("com.github.bradleyrumball.autologic.GA.Host", true, classLoader);
+//    Host instance = (Host)cls.newInstance();
+//    instance.main(null);
     //Can now do stuff like instance.METHODS-IN-HOST
 //    System.out.println(instance);
 
 //
-*/
+
     /*
     TODO: - inject classUnderTest into host
           - when injected method to be tested should be called "instrumentedMethod"

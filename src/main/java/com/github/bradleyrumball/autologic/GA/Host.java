@@ -1,6 +1,6 @@
 package com.github.bradleyrumball.autologic.GA;
 
-import com.github.bradleyrumball.autologic.Triangle;
+
 import com.github.bradleyrumball.autologic.test_case_generation.JUnitOutputManager;
 import com.github.javaparser.ast.expr.BinaryExpr;
 
@@ -55,7 +55,8 @@ public class Host {
      * Runs the GA - probably should be abstracted to another class
      * @param args program args
      */
-    public static void main (String[] args) {
+    public static void run () {
+        System.out.println("Test");
         ArrayList<Individual> solutions = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_BRANCHES; i++) {
             currentBranch = i;
@@ -216,54 +217,16 @@ public class Host {
         return fScore == 0;
     }
 
-    /**
-     * Instrumented class under test
-     * @param side1 side length 1
-     * @param side2 side length 2
-     * @param side3 side length 3
-     * @return triangle type
+    private static boolean log(int id){
+        int fScore = 0;
 
-     */
-    private static Triangle.Type instrumentedMethod(int side1, int side2, int side3) {
-        Triangle.Type type = null;
+        if (id == currentBranch) currentFitness = fScore;
 
-        if (log(0, side1, side2, BinaryExpr.Operator.GREATER)) {
-            int temp = side1;
-            side1 = side2;
-            side2 = temp;
-        } else if (log(1, side1, side2, BinaryExpr.Operator.LESS_EQUALS)) {
-        }
+        return fScore==0;
+    }
 
-        if (log(2,side1, side3, BinaryExpr.Operator.GREATER)) {
-            int temp = side1;
-            side1 = side3;
-            side3 = temp;
-        } else if(log(3,side1, side3, BinaryExpr.Operator.LESS_EQUALS)) {
-        }
 
-        if (log(4, side2, side3, BinaryExpr.Operator.GREATER)) {
-            int temp = side2;
-            side2 = side3;
-            side3 = temp;
-        } else if(log(5, side2, side3, BinaryExpr.Operator.LESS_EQUALS)){
-
-        }
-            if (log(6, (long)side1+(long)side2, side3, BinaryExpr.Operator.LESS_EQUALS)) {
-                type = Triangle.Type.INVALID;
-            } else if(log(7, (long)side1+(long)side2, side3, BinaryExpr.Operator.GREATER)){
-                type = Triangle.Type.SCALENE;
-                if (log(8, side1, side2, BinaryExpr.Operator.EQUALS)) {
-                    if (log(12, side2, side3, BinaryExpr.Operator.EQUALS)) {
-                        type = Triangle.Type.EQUILATERAL;
-                    } else if(log(13, side2, side3, BinaryExpr.Operator.NOT_EQUALS)){
-                    }
-                } else if(log(9, side1, side2, BinaryExpr.Operator.NOT_EQUALS)){
-                    if (log(10, side2, side3, BinaryExpr.Operator.EQUALS)) {
-                        type = Triangle.Type.ISOSCELES;
-                    } else if(log(11, side2, side3, BinaryExpr.Operator.NOT_EQUALS)){
-                    }
-                }
-            }
-        return type;
+    private static Object instrumentedMethod(Object...var) {
+        return null;
     }
 }

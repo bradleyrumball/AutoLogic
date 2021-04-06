@@ -1,5 +1,7 @@
 package com.github.bradleyrumball.autologic;
 
+import sun.tools.jstat.Operator;
+
 public class BMICalculator {
 
     public enum Type {
