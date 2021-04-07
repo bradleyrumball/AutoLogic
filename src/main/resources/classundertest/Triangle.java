@@ -1,4 +1,4 @@
-package org.sheffield.classundertest;
+package com.github.bradleyrumball.autologic;
 
 
 public class Triangle {
@@ -8,11 +8,6 @@ public class Triangle {
         SCALENE,
         EQUILATERAL,
         ISOSCELES;
-    }
-
-    public static Integer addTwoNumbers(Integer num1, Integer num2) {
-        Integer sum = num1 + num2;
-        return sum;
     }
 
     public static Type classify(int side1, int side2, int side3) {

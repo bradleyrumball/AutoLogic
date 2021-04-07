@@ -75,7 +75,7 @@ public class Population {
      * @return the individual with the best (lowest) fitness
      */
     protected Individual getFittest() {
-        return individuals.stream().sorted(Comparator.comparingDouble(Individual::getFitness)).limit(1).collect(Collectors.toList()).get(0);
+        return individuals.parallelStream().sorted(Comparator.comparingDouble(Individual::getFitness)).limit(1).collect(Collectors.toList()).get(0);
     }
 
     /**

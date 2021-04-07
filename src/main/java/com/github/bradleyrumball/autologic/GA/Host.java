@@ -8,6 +8,8 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Controls the main execution of the GA
@@ -56,10 +58,10 @@ public class Host {
      * Runs the GA - probably should be abstracted to another class
      */
     public void run() {
-        for (Method method : methods) {
+        methods.parallelStream().forEach(method -> {
             int branchID = 0;
             ArrayList<Individual> solutions = new ArrayList<>();
-            Population population = new Population(50, method, branchID); //50
+            Population population = new Population(1000, method, branchID); //50
             for (int i = 0; i < numberOfBranches.getOrDefault(method.getName(), 0); i += 2) {
                 for (int j = 0; j <= 1; j++) {
                     branchID = i + j;
@@ -84,7 +86,7 @@ public class Host {
 
             JUnitOutputManager jUnitGenerator = new JUnitOutputManager(solutions, classPath, method.getDeclaringClass().getSimpleName(), method.getName());
             jUnitGenerator.unitGenerator();
-        }
+        });
     }
 
     /**
@@ -106,17 +108,16 @@ public class Host {
         }
 
         // Crossover - get best x individuals and cross them
-        for (int i = elitismOffset; i < population.getIndividuals().size(); i++) {
+        IntStream.range(elitismOffset, population.getIndividuals().size()).parallel().mapToObj(i -> {
             Individual tournamentWinner1 = tournament(population, method, currentBranch);
             Individual tournamentWinner2 = tournament(population, method, currentBranch);
-            Individual crossoverIndividual = crossover(tournamentWinner1, tournamentWinner2, method, currentBranch);
-            newPopulation.addIndividual(crossoverIndividual);
-        }
+            Individual crossed = crossover(tournamentWinner1, tournamentWinner2, method, currentBranch);
+            // Mutation - adjust genetics by manipulating their values
+            mutate(crossed);
+            return crossed;
 
-        // Mutation - adjust genetics by manipulating their values
-        for (int i = elitismOffset; i < newPopulation.getIndividuals().size(); i++) {
-            mutate(newPopulation.getIndividual(i));
-        }
+        }).collect(Collectors.toList()).forEach(newPopulation::addIndividual);
+
         return newPopulation;
     }
 
@@ -128,10 +129,11 @@ public class Host {
      */
     private Individual tournament(Population population, Method method, int currentBranch) {
         Population tournament = new Population(0, method, currentBranch);
-        for (int i = 0; i < TOURNAMENT_SIZE; i++) {
+
+        IntStream.range(0, TOURNAMENT_SIZE).parallel().mapToObj(i -> {
             int randomIndividual = (int) (Math.random() * population.getIndividuals().size());
-            tournament.addIndividual(population.getIndividual(randomIndividual));
-        }
+            return population.getIndividual(randomIndividual);
+        }).collect(Collectors.toList()).forEach(tournament::addIndividual);
         return tournament.getFittest();
     }
 
