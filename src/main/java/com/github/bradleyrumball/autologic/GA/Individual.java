@@ -20,7 +20,10 @@ public class Individual {
      * Genes represent the parameters that are going into the method
      */
     private final int[] genes;
-
+    /**
+     * The method that is under test
+     */
+    private final Method method;
     /**
      * The current fitness of the individual
      * <p>
@@ -28,21 +31,14 @@ public class Individual {
      * Ideal fitness is 0
      */
     private double fitness = Integer.MAX_VALUE;
-
     /**
      * The current branch that an individual is targeting
      */
     private int currentBranch;
-
     /**
      * The value that the method under test returns once the individual has been executed on it
      */
     private Object methodReturnValue;
-
-    /**
-     * The method that is under test
-     */
-    private final Method method;
 
     /**
      * Constructor, individuals are created with their initial gene pool set
@@ -58,7 +54,7 @@ public class Individual {
         this.method = method;
         int starter = new SecureRandom().nextInt();
         if (new SecureRandom().nextBoolean()) Arrays.fill(genes, starter);
-        else Arrays.fill(genes, starter%25);
+        else Arrays.fill(genes, starter % 25);
     }
 
     public Individual(Method method, Integer currentBranch, int[] genes) {
@@ -115,24 +111,21 @@ public class Individual {
      * @return int - fitness value of the individual
      */
     public double getFitness() {
-        Object[] inputParams = new Object[genes.length + 1];
-        for (int i = 0; i < genes.length; i++) {
-            inputParams[i] = genes[i];
+        if (fitness == Integer.MAX_VALUE) {
+            Object[] inputParams = new Object[genes.length + 1];
+            for (int i = 0; i < genes.length; i++) inputParams[i] = genes[i];
+
+            MethodLogger methodLogger = new MethodLogger(currentBranch);
+            inputParams[inputParams.length - 1] = methodLogger;
+
+            try {
+                methodReturnValue = method.invoke(null, inputParams);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+
+            fitness = methodLogger.getFitness();
         }
-
-        MethodLogger methodLogger = new MethodLogger(currentBranch);
-        inputParams[inputParams.length - 1] = methodLogger;
-
-        try {
-            methodReturnValue = method.invoke(null, inputParams);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
-        fitness = methodLogger.getFitness();
-
         return fitness;
     }
 

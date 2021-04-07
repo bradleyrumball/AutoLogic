@@ -55,6 +55,9 @@ public class App {
 
     String classPath = methodUnderTestVisitor.getClassPath();
     Class<?> clazz = CompilerUtils.CACHED_COMPILER.loadFromJava(classPath, instrumentedClass.toString());
+
+    long start = System.currentTimeMillis();
     new Host(Arrays.stream(clazz.getMethods()).filter(m -> m.getDeclaringClass() == clazz).collect(Collectors.toList()), numberOfBranches, classPath).run();
+    System.out.println("\n Woah, that only took " + (System.currentTimeMillis() - start) + "ms");
   }
 }
