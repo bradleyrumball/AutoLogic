@@ -2,6 +2,8 @@ package com.github.bradleyrumball.autologic.GA;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 /**
  * A class to manage a population of individuals
@@ -24,6 +26,18 @@ public class Population {
     public Population(int populationSize, Method method, int currentBranch) {
         individuals = new ArrayList<>();
         for (int i = 0; i < populationSize; i++) individuals.add(i, new Individual(method, currentBranch));
+    }
+
+    public Population(ArrayList<Individual> individuals) {
+        this.individuals = individuals;
+    }
+
+    public Population setBranchID(int newCurrentBranch) {
+        ArrayList<Individual> individualsList = new ArrayList<>();
+        individuals.forEach(i -> {
+            individualsList.add(new Individual(i.getMethod(), newCurrentBranch, i.getGenes()));
+        });
+        return new Population(individualsList);
     }
 
     /**
@@ -61,11 +75,7 @@ public class Population {
      * @return the individual with the best (lowest) fitness
      */
     protected Individual getFittest() {
-        Individual fittest = individuals.get(0);
-        for (Individual individual : individuals) {
-            if (individual.getFitness() < fittest.getFitness()) fittest = individual;
-        }
-        return fittest;
+        return individuals.stream().sorted(Comparator.comparingDouble(Individual::getFitness)).limit(1).collect(Collectors.toList()).get(0);
     }
 
     /**

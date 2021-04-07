@@ -13,8 +13,8 @@ public class WhereEqual {
     }
 
 
-    public static String elseEqualPlusOne(int a, int b) {
-        if( a != b {
+    public static String ifNotEqual(int a, int b) {
+        if( a != b ) {
             return "a!=b on if";
         } else {
             return "a==b on else";
