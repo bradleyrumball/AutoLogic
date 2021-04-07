@@ -18,7 +18,7 @@ Team:
 
 #### Test Requirement Generation ####
 - [X] Simple coverage criterion implemented (e.g., Condition Coverage) 😟/😭
-- [ ] Advanced coverage criterion implemented (e.g., Restricted or Cor-related MCDC) 🙂/😐
+- [X] Advanced coverage criterion implemented (e.g., Restricted or Cor-related MCDC) 🙂/😐
 - [ ] Multiple criteria implemented 😁
 
 #### Instrumentation ####
@@ -35,7 +35,7 @@ Team:
 
 #### Coverage Level Computation and Reporting ####
 - [ ] Coverage level computed for simple criterion as implemented for (2)above 😐/😟/😭
-- [ ] Coverage  level  computed  and  individual  uncovered  elements  re-ported 😁/🙂
+- [X] Coverage  level  computed  and  individual  uncovered  elements  re-ported 😁/🙂
 
 #### Test Suite Output ####
 - [ ] Simple output of inputs to the command line 😐/😟/😭
