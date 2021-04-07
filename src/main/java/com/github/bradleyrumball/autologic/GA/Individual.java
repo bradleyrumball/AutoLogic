@@ -57,6 +57,12 @@ public class Individual {
         else Arrays.fill(genes, starter % 25);
     }
 
+    /**
+     * Constructor used to create new population from old population
+     * @param method
+     * @param currentBranch
+     * @param genes
+     */
     public Individual(Method method, Integer currentBranch, int[] genes) {
         this.genes = genes;
         this.currentBranch = currentBranch;
@@ -129,6 +135,10 @@ public class Individual {
         return fitness;
     }
 
+    /**
+     * Get the method from the current individual
+     * @return
+     */
     public Method getMethod() {
         return method;
     }

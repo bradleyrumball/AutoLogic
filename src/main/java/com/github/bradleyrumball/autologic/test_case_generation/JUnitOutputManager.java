@@ -81,7 +81,9 @@ public class JUnitOutputManager {
         imports.add("static org.junit.Assert.*");
     }
 
-    // Shows how files can be built. Will need to use o.add for multiple test cases.
+    /**
+     * Generates each unit test as a list
+     */
     public void unitGenerator() {
         List<OutputElement> o = new ArrayList<>();
         for (Individual condition : conditions) {

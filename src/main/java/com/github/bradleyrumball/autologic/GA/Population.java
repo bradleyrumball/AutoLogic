@@ -28,10 +28,19 @@ public class Population {
         for (int i = 0; i < populationSize; i++) individuals.add(i, new Individual(method, currentBranch));
     }
 
+    /**
+     * Constructor to create a population from a list of individuals
+     * @param individuals
+     */
     public Population(ArrayList<Individual> individuals) {
         this.individuals = individuals;
     }
 
+    /**
+     * Allows us to clone the current generation but with a new branchID
+     * @param newCurrentBranch the branchID to associate with the new population
+     * @return a new population
+     */
     public Population setBranchID(int newCurrentBranch) {
         ArrayList<Individual> individualsList = new ArrayList<>();
         individuals.forEach(i -> {

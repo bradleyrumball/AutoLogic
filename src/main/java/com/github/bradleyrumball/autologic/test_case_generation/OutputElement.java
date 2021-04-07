@@ -21,45 +21,9 @@ public class OutputElement {
      * @param imports Imports
      */
     public OutputElement(String method, List<String> input, String expected, List<String> imports) {
-        this.method  = method ;
+        this.method  = method;
         this.input = input;
         this.expected = expected;
-        this.imports = imports;
-    }
-
-    /***
-     * Setter for method name
-     *
-     * @param method the method name
-     */
-    protected void setMethod(String method) {
-        this.method = method;
-    }
-
-    /***
-     * Setter for inputs for the test
-     *
-     * @param input List of inputs
-     */
-    protected void setInput(List<String>  input) {
-        this.input = input;
-    }
-
-    /***
-     * Setter for expected output
-     *
-     * @param expected Output string
-     */
-    protected void setExpected(String expected) {
-        this.expected = expected;
-    }
-
-    /***
-     * Setter for imports
-     *
-     * @param imports List of imports as strings
-     */
-    protected void setImports(List<String> imports) {
         this.imports = imports;
     }
 

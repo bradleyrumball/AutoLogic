@@ -21,7 +21,6 @@ public class MethodLogger {
         this.branchEvaluatesTrue = (currentBranch%2 == 0);
     }
 
-
     /**
      * Return the current fitness for the current branch
      * @return
@@ -66,6 +65,11 @@ public class MethodLogger {
         return true;
     }
 
+    /**
+     * Gets the opposite of the binary expression input
+     * @param op a binary operator
+     * @return the opposing binary operator
+     */
     private BinaryExpr.Operator invertOperator(BinaryExpr.Operator op) {
         BinaryExpr.Operator inverse = null;
         switch (op) {

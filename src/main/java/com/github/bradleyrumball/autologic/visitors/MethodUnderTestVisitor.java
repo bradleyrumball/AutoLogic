@@ -27,6 +27,9 @@ public class MethodUnderTestVisitor extends ModifierVisitor<MethodDeclaration> {
      */
     private final ArrayList<BinaryExpr> elseBuilder = new ArrayList<>();
 
+    /**
+     * path of class under test
+     */
     private String classPath = "";
 
     /**
@@ -38,12 +41,24 @@ public class MethodUnderTestVisitor extends ModifierVisitor<MethodDeclaration> {
         return idCounter;
     }
 
+    /**
+     * Visit each method
+     * @param n iterator
+     * @param arg argument
+     * @return recursive call
+     */
     @Override
     public Visitable visit(MethodDeclaration n, MethodDeclaration arg) {
         n.addParameter(MethodLogger.class, "methodLogger");
         return super.visit(n, n);
     }
 
+    /**
+     * Visit each Compilation method
+     * @param n iterator
+     * @param arg argument
+     * @return recursive call
+     */
     @Override
     public Visitable visit(CompilationUnit n, MethodDeclaration arg) {
         n.addImport(BinaryExpr.class.getCanonicalName());
@@ -51,14 +66,16 @@ public class MethodUnderTestVisitor extends ModifierVisitor<MethodDeclaration> {
         return super.visit(n, arg);
     }
 
+    /**
+     * Visit each Class
+     * @param n iterator
+     * @param arg argument
+     * @return recursive call
+     */
     @Override
     public Visitable visit(ClassOrInterfaceDeclaration n, MethodDeclaration arg) {
         classPath +=n.getNameAsString();
         return super.visit(n, arg);
-    }
-
-    public String getClassPath() {
-        return classPath;
     }
 
     /***
@@ -69,18 +86,9 @@ public class MethodUnderTestVisitor extends ModifierVisitor<MethodDeclaration> {
      * @return A visitor
      */
     @Override
-    public IfStmt visit(IfStmt n, MethodDeclaration arg) {
+    public Visitable visit(IfStmt n, MethodDeclaration arg) {
         //Check if the current IF statement that we are visiting as already been injected with log statements
-
-        BinaryExpr conditionExpression = n.getCondition().asBinaryExpr().clone();
-        n.setCondition(getLogStatement(arg, n.getCondition().asBinaryExpr()));
-
-        // Recursion
-        super.visit(n, arg);
-
-
-        // Return the injected cu
-        return n;
+        return super.visit(n.setCondition(getLogStatement(arg, n.getCondition().asBinaryExpr())), arg);
     }
 
     /**
@@ -107,6 +115,14 @@ public class MethodUnderTestVisitor extends ModifierVisitor<MethodDeclaration> {
             Expression expressionCondition = StaticJavaParser.parseExpression(insert);
             return expressionCondition;
         }
+    }
+
+    /**
+     * Getter for class path
+     * @return the path for the class under test
+     */
+    public String getClassPath() {
+        return classPath;
     }
 
 }

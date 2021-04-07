@@ -33,12 +33,23 @@ public class Host {
      * us in local minima
      */
     private static final boolean ELITISM = true;
+    /**
+     * The maximum number of generations that are permitted per branch
+     * after this a branch is determined intractable
+     */
+    private static final int MAX_GENERATIONS_PER_BRANCH = 200;
 
-    private static final int MAX_GENERATIONS_PER_BRANCH = 5000;
-
-
+    /**
+     * list of all methods in a class that we are going to test
+     */
     private final List<Method> methods;
+    /**
+     * map of number of branches against a method
+     */
     private final Map<String, Integer> numberOfBranches;
+    /**
+     * the path of the class under test
+     */
     private final String classPath;
 
     /**
@@ -61,7 +72,7 @@ public class Host {
         methods.parallelStream().forEach(method -> {
             int branchID = 0;
             ArrayList<Individual> solutions = new ArrayList<>();
-            Population population = new Population(1000, method, branchID); //50
+            Population population = new Population(100, method, branchID); //50
             for (int i = 0; i < numberOfBranches.getOrDefault(method.getName(), 0); i += 2) {
                 for (int j = 0; j <= 1; j++) {
                     branchID = i + j;
