@@ -32,6 +32,8 @@ public class Host {
      */
     private static final boolean ELITISM = true;
 
+    private static final int MAX_GENERATIONS_PER_BRANCH = 5000;
+
 
     private final List<Method> methods;
     private final Map<String, Integer> numberOfBranches;
@@ -55,20 +57,31 @@ public class Host {
      */
     public void run() {
         for (Method method : methods) {
+            int branchID = 0;
             ArrayList<Individual> solutions = new ArrayList<>();
-            for (int i = 0; i < numberOfBranches.getOrDefault(method.getName(), 0); i++) {
-                Population population = new Population(50, method, i); //50
-                double populationFitness = population.getFittest().getFitness();
-                while (populationFitness > 0) {
-//                System.out.println("Generation: " + generation + " Current fitness: " + populationFitness);
-                    population = evolvePopulation(population, method, i);
-                    populationFitness = population.getFittest().getFitness();
-                }
-                System.out.println("  for branch " + i + " has been found");
-                solutions.add(i, population.getFittest());
+            Population population = new Population(50, method, branchID); //50
+            for (int i = 0; i < numberOfBranches.getOrDefault(method.getName(), 0); i += 2) {
+                for (int j = 0; j <= 1; j++) {
+                    branchID = i + j;
+                    population = population.setBranchID(branchID);
+                    double populationFitness = population.getFittest().getFitness();
+                    int generation = 0;
+                    while (populationFitness > 0 && generation <= MAX_GENERATIONS_PER_BRANCH) {
+//                        System.out.println("Current Branch: " + (i+j) + " Current fitness: " + populationFitness);
+                        population = evolvePopulation(population, method, branchID);
+                        populationFitness = population.getFittest().getFitness();
+                        generation++;
+                    }
+                    if (populationFitness == 0) {
+                        System.out.println("Solution for branch " + branchID + " has been found");
+                        solutions.add(population.getFittest());
+                    } else System.out.println("Branch " + branchID + " is intractable");
 
+                }
             }
-            System.out.println("Solutions found for all");
+            System.out.println(solutions.size() + " test conditions found with solutions");
+            System.out.println("Coverage for " + method.getName() + " = " + ((solutions.size() / (numberOfBranches.getOrDefault(method.getName(), 0).doubleValue()+1)) * 100) + "%");
+
             JUnitOutputManager jUnitGenerator = new JUnitOutputManager(solutions, classPath, method.getDeclaringClass().getSimpleName(), method.getName());
             jUnitGenerator.unitGenerator();
         }

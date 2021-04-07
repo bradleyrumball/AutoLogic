@@ -1,33 +1,20 @@
 package com.github.bradleyrumball.autologic;
 
-import sun.tools.jstat.Operator;
+public class LotsOfIf {
 
-public class WhereEqual {
-
-    public static String ifEqual(int a, int b) {
-        if( a == b) {
-            return "a==b on if";
-        } else {
-            return "a!=b on else";
+    public static String fourLayersDeep(int a, int b, int c, int d) {
+        if( a == b+1 ) {
+            if (b == c+1) {
+                if (c == d+1) {
+                    if (d == a+1) {
+                        return "shouldn't have got here";
+                    }
+                    return "three layers deep";
+                }
+                return "two layers deep";
+            }
+            return "one layers deep";
         }
-    }
-
-
-    public static String ifNotEqual(int a, int b) {
-        if( a != b ) {
-            return "a!=b on if";
-        } else {
-            return "a==b on else";
-        }
-    }
-
-    // This doesn't work as it has to randomly pick two numbers that one apart
-    // Else has no guidance which is where the issue lies
-    public static String elseEqualPlusOne(int a, int b) {
-        if( a != b+1) {
-            return "a!=b on if";
-        } else {
-            return "a==b on else";
-        }
+        return "no layers deep";
     }
 }

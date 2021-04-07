@@ -87,7 +87,6 @@ public class JUnitOutputManager {
         for (Individual condition : conditions) {
             ArrayList<String> inputs = new ArrayList<>();// = {"5", "5", "5"};
             for (int gene : condition.getGenes()) {
-                System.out.println(gene);
                 inputs.add(String.valueOf(gene));
             }
             String[] imports = {classPath};

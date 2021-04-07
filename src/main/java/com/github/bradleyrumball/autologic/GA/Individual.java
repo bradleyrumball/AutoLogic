@@ -57,7 +57,14 @@ public class Individual {
         this.currentBranch = currentBranch;
         this.method = method;
         int starter = new SecureRandom().nextInt();
-        Arrays.fill(genes, starter);
+        if (new SecureRandom().nextBoolean()) Arrays.fill(genes, starter);
+        else Arrays.fill(genes, starter%25);
+    }
+
+    public Individual(Method method, Integer currentBranch, int[] genes) {
+        this.genes = genes;
+        this.currentBranch = currentBranch;
+        this.method = method;
     }
 
     /**
@@ -127,6 +134,10 @@ public class Individual {
         fitness = methodLogger.getFitness();
 
         return fitness;
+    }
+
+    public Method getMethod() {
+        return method;
     }
 
     /**

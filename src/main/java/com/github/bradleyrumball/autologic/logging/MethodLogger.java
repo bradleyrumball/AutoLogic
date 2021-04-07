@@ -10,6 +10,7 @@ public class MethodLogger {
 
     private double fitness = Integer.MAX_VALUE;
     private int currentBranch;
+    private boolean branchEvaluatesTrue;
 
     /**
      * Constructor for method logger
@@ -17,6 +18,7 @@ public class MethodLogger {
      */
     public MethodLogger(int currentBranch){
         this.currentBranch = currentBranch;
+        this.branchEvaluatesTrue = (currentBranch%2 == 0);
     }
 
 
@@ -37,7 +39,8 @@ public class MethodLogger {
      * @return the evaluation of the condition
      */
     public boolean log(int id, double left, double right, BinaryExpr.Operator operator) {
-        Fitness f = new Fitness(left, right, operator);
+        // Careful with the logic here (lots of inverting going on)
+        Fitness f = new Fitness(left, right, branchEvaluatesTrue ? operator : invertOperator(operator));
         double fScore = Integer.MAX_VALUE;
         try {
             fScore = f.getFitness();
@@ -46,9 +49,11 @@ public class MethodLogger {
         }
 
         // We only set set the fitness value if the current branch is the one we are testing
-        if(id==currentBranch) fitness = fScore;
-        // to continue with execution
-        return fScore == 0;
+        if((id+(branchEvaluatesTrue?0:1)) == currentBranch)
+            fitness = fScore;
+        // to continue with execution (if the fScore is 0 and the branch is taking the path
+        // that is equal to the fScore being zero then return true otherwise false.
+        return branchEvaluatesTrue == (fScore == 0);
     }
 
     /**
@@ -59,5 +64,30 @@ public class MethodLogger {
     public boolean log(int id){
         if (id == currentBranch) fitness = 0;
         return true;
+    }
+
+    private BinaryExpr.Operator invertOperator(BinaryExpr.Operator op) {
+        BinaryExpr.Operator inverse = null;
+        switch (op) {
+            case EQUALS:
+                inverse = BinaryExpr.Operator.NOT_EQUALS;
+                break;
+            case NOT_EQUALS:
+                inverse = BinaryExpr.Operator.EQUALS;
+                break;
+            case GREATER:
+                inverse = BinaryExpr.Operator.LESS_EQUALS;
+                break;
+            case GREATER_EQUALS:
+                inverse = BinaryExpr.Operator.LESS;
+                break;
+            case LESS:
+                inverse = BinaryExpr.Operator.GREATER_EQUALS;
+                break;
+            case LESS_EQUALS:
+                inverse = BinaryExpr.Operator.GREATER;
+                break;
+        }
+        return inverse;
     }
 }
