@@ -11,21 +11,42 @@ import java.util.*;
 
 public class JUnitOutputManager {
 
-    private ArrayList<Individual> conditions;
-    private final String classPath;
-    private final String className;
-    private final String methodName;
-
     /**
-     * Constructor for Junit Manager
-     *
-     * @param conditions array list of individuals
+     * Array list of conditions
      */
-    public JUnitOutputManager(ArrayList<Individual> conditions, String classPath, String className, String methodName) {
+    private ArrayList<Individual> conditions;
+    /**
+     * The class path of the class under test as a String
+     */
+    private final String classPath;
+    /**
+     * The String name of the class under test
+     */
+    private final String className;
+    /**
+     * The method name of the class under test
+     */
+    private final String methodName;
+    /**
+     * The output String for the test suite
+     */
+    private final String outputPath;
+
+    /***
+     * Constructor for the output manager
+     *
+     * @param conditions Array list of conditions
+     * @param classPath Class path string
+     * @param className The name of the class being tested
+     * @param methodName The name of the method being tested
+     * @param outputPath The output path for the test suite
+     */
+    public JUnitOutputManager(ArrayList<Individual> conditions, String classPath, String className, String methodName, String outputPath) {
         this.conditions = conditions;
         this.classPath = classPath;
         this.className = className;
         this.methodName = methodName;
+        this.outputPath = outputPath;
     }
 
     /***
@@ -39,6 +60,7 @@ public class JUnitOutputManager {
         Set<String> imports = new HashSet<>();
         baseImports(imports);
 
+        // Constructs the tests
         StringBuffer header = new StringBuffer();
         StringBuffer body = new StringBuffer();
         StringBuffer footer = new StringBuffer();
@@ -87,7 +109,7 @@ public class JUnitOutputManager {
     public void unitGenerator() {
         List<OutputElement> o = new ArrayList<>();
         for (Individual condition : conditions) {
-            ArrayList<String> inputs = new ArrayList<>();// = {"5", "5", "5"};
+            ArrayList<String> inputs = new ArrayList<>();
             for (int gene : condition.getGenes()) {
                 inputs.add(String.valueOf(gene));
             }
@@ -97,7 +119,7 @@ public class JUnitOutputManager {
 
 
         try {
-            generate(o, "src" + File.separator + "test" + File.separator + "java" + File.separator + "com" + File.separator + "github" + File.separator + "bradleyrumball" + File.separator + "autologic" + File.separator);
+            generate(o, Paths.get(outputPath).toString());
         } catch (IOException e) {
             e.printStackTrace();
         }

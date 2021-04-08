@@ -10,6 +10,7 @@ import net.openhft.compiler.CompilerUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,8 +43,16 @@ public class App {
    * @throws ClassNotFoundException bad things
    */
   public static void main(String[] args) throws FileNotFoundException, ClassNotFoundException {
+    // Command line args for file paths
+    String inputPath = args[0];
+    String outputPath = args[1];
+
+    System.out.println("Welcome to AutoLogic :D!");
+    System.out.println("You are currently testing " + inputPath + " file");
+    System.out.println("With output to " + outputPath);
+
     // get the compilation unit of the class under test
-    CompilationUnit instrumentedClass = getCU("src/main/resources/classundertest/Triangle.java");
+    CompilationUnit instrumentedClass = getCU(Paths.get(inputPath).toString());
 
     // inject CU with log statements on ifs
     MethodUnderTestVisitor methodUnderTestVisitor = new MethodUnderTestVisitor();
@@ -57,7 +66,7 @@ public class App {
     Class<?> clazz = CompilerUtils.CACHED_COMPILER.loadFromJava(classPath, instrumentedClass.toString());
 
     long start = System.currentTimeMillis();
-    new Host(Arrays.stream(clazz.getMethods()).filter(m -> m.getDeclaringClass() == clazz).collect(Collectors.toList()), numberOfBranches, classPath).run();
+    new Host(Arrays.stream(clazz.getMethods()).filter(m -> m.getDeclaringClass() == clazz).collect(Collectors.toList()), numberOfBranches, classPath, outputPath).run();
     System.out.println("\n Woah, that only took " + (System.currentTimeMillis() - start) + "ms");
   }
 }

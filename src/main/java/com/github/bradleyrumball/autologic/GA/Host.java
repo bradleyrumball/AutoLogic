@@ -51,6 +51,10 @@ public class Host {
      * the path of the class under test
      */
     private final String classPath;
+    /**
+     * the path of the returned test suite classes
+     */
+    private final String outputPath;
 
     /**
      * Constructor for host
@@ -58,11 +62,13 @@ public class Host {
      * @param methods          list of all methods in a class that we are going to test
      * @param numberOfBranches map of number of branches against a method
      * @param classPath        the path of the class under test
+     * @param outputPath       the output path for the test suite
      */
-    public Host(List<Method> methods, Map<String, Integer> numberOfBranches, String classPath) {
+    public Host(List<Method> methods, Map<String, Integer> numberOfBranches, String classPath, String outputPath) {
         this.methods = methods;
         this.numberOfBranches = numberOfBranches;
         this.classPath = classPath;
+        this.outputPath = outputPath;
     }
 
     /**
@@ -95,7 +101,7 @@ public class Host {
             System.out.println(solutions.size() + " test conditions found with solutions");
             System.out.println("Coverage for " + method.getName() + " = " + ((solutions.size() / (numberOfBranches.getOrDefault(method.getName(), 0).doubleValue()+1)) * 100) + "%");
 
-            JUnitOutputManager jUnitGenerator = new JUnitOutputManager(solutions, classPath, method.getDeclaringClass().getSimpleName(), method.getName());
+            JUnitOutputManager jUnitGenerator = new JUnitOutputManager(solutions, classPath, method.getDeclaringClass().getSimpleName(), method.getName(), outputPath);
             jUnitGenerator.unitGenerator();
         });
     }
