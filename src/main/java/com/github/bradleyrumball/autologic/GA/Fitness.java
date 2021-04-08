@@ -1,7 +1,7 @@
 package com.github.bradleyrumball.autologic.GA;
 
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
-import org.apache.commons.text.similarity.JaroWinklerDistance;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 
 /**
  * Class to calculate the fitness of a logical condition
@@ -26,7 +26,7 @@ public class Fitness {
    */
   private final int K;
 
-  private final Class objectType;
+  private final Class superClass;
 
   /**
    * Main constructor allows all inputs plus a custom K value (not used by this application)
@@ -36,20 +36,26 @@ public class Fitness {
    * @param K A small positive value
    */
   public Fitness (Object left, Object right, Operator operator, int K) {
-    this.left = left;
-    this.right = right;
     this.operator = operator;
     this.K = K;
-    this.objectType = left.getClass();
+    this.left = left;
+    this.right = right;
+    this.superClass = left.getClass().getSuperclass()!=Object.class ? left.getClass().getSuperclass() : (left.getClass()==String.class ? CharSequence.class : left.getClass());
   }
 
-  /**
-   * Primary constructor, sets k as 1.
-   * @param left left side of condition
-   * @param right right side of condition
-   * @param operator operator of condition
-   */
-  public Fitness (Object left, Object right , Operator operator) {
+  public Fitness (Number left, Number right , Operator operator) {
+    this(((Number) left).doubleValue(), ((Number) right).doubleValue(), operator, 1);
+  }
+
+  public Fitness (CharSequence left, CharSequence right , Operator operator) {
+    this((CharSequence)left, (CharSequence)right, operator, 1);
+  }
+
+  public Fitness (char left, char right , Operator operator) {
+    this(String.valueOf(left), String.valueOf(right), operator);
+  }
+
+  public Fitness (Boolean left, Boolean right , Operator operator) {
     this(left, right, operator, 1);
   }
 
@@ -58,15 +64,18 @@ public class Fitness {
    * @return fitness score 0 if condition met else |a-b|+K
    */
   private double equal() {
-    if (objectType.getSuperclass() == Number.class) {
-      double score = Math.abs((double)left - (double)right);
-      return (score == 0) ? 0 : score + K;
+    double score = Integer.MAX_VALUE-K;
+    if (superClass == Number.class) {
+      score = Math.abs((double)left - (double)right);
     }
-    if (objectType.getSuperclass() == CharSequence.class) {
-      JaroWinklerDistance jw = new JaroWinklerDistance();
-      return jw.apply((CharSequence)left, (CharSequence)right)*Integer.MAX_VALUE;
+    if (superClass == CharSequence.class) {
+      LevenshteinDistance ld = new LevenshteinDistance();
+      score = ld.apply((CharSequence)left, (CharSequence)right);
     }
-    return Integer.MAX_VALUE;
+    if (superClass == Boolean.class) {
+      score = left == right ? 0 : 1;
+    }
+    return (score == 0) ? 0 : score + K;
   }
 
   /**
@@ -74,17 +83,18 @@ public class Fitness {
    * @return fitness score 0 if condition met else K
    */
   private double notEqual() {
-    if (objectType.getSuperclass() == Number.class) {
-      double score = Math.abs((double)left - (double)right);
-      return (score != 0) ? 0 : K;
+    double score = Integer.MAX_VALUE-K;
+    if (superClass == Number.class) {
+      score = Math.abs((double)left - (double)right);
     }
-    if (objectType.getSuperclass() == CharSequence.class) {
-      JaroWinklerDistance jw = new JaroWinklerDistance();
-      double dist = jw.apply((CharSequence)left, (CharSequence)right)*Integer.MAX_VALUE;
-      return (dist == 0) ? 0 : K;
+    if (superClass == CharSequence.class) {
+      LevenshteinDistance ld = new LevenshteinDistance();
+      score = ld.apply((CharSequence)left, (CharSequence)right);
     }
-    return Integer.MAX_VALUE;
-
+    if (superClass == Boolean.class) {
+      score = left == right ? 0 : 1;
+    }
+    return (score != 0) ? 0 : K;
   }
 
   /**
