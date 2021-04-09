@@ -120,7 +120,7 @@
           <transformers>
             <transformer
               implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <mainClass>com.github.bradleyrumball.autologic.App</mainClass>
+              <mainClass>com.github.bradleyrumball.autologic.AutoLogic</mainClass>
             </transformer>
           </transformers>
         </configuration>
