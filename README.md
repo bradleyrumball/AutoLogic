@@ -1,6 +1,6 @@
 ![img](https://lumcdn.ams3.cdn.digitaloceanspaces.com/Bradley/Artboard%201.png)
 
-# AutoLogic [![Build Status](https://travis-ci.com/bradleyrumball/AutoLogic.svg?token=bHNU4yeXhHmC2AyddcFV&branch=main)](https://travis-ci.com/bradleyrumball/AutoLogic) ![mvn workflow](https://github.com/bradleyrumball/AutoLogic/actions/workflows/maven.yml/badge.svg)
+# AutoLogic [![Build Status](https://travis-ci.com/bradleyrumball/AutoLogic.svg?token=bHNU4yeXhHmC2AyddcFV&branch=main)](https://travis-ci.com/bradleyrumball/AutoLogic) ![mvn workflow](https://github.com/bradleyrumball/AutoLogic/actions/workflows/maven.yml/badge.svg) [![codecov](https://codecov.io/gh/bradleyrumball/AutoLogic/branch/main/graph/badge.svg?token=6FY7PS169E)](https://codecov.io/gh/bradleyrumball/AutoLogic)
 Automated Tool Support for Logic Coverage of Java Code
 
 Team:
