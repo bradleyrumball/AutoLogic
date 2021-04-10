@@ -1,7 +1,6 @@
 package com.github.bradleyrumball.autologic.GA;
 
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
-import org.apache.commons.text.similarity.LevenshteinDistance;
 
 /**
  * Class to calculate the fitness of a logical condition
@@ -69,8 +68,7 @@ public class Fitness {
       score = Math.abs((double)left - (double)right);
     }
     if (superClass == CharSequence.class) {
-      LevenshteinDistance ld = new LevenshteinDistance();
-      score = ld.apply((CharSequence)left, (CharSequence)right);
+      score = stringEqualsDistance((String) left, (String)right);
     }
     if (superClass == Boolean.class) {
       score = left == right ? 0 : 1;
@@ -88,8 +86,7 @@ public class Fitness {
       score = Math.abs((double)left - (double)right);
     }
     if (superClass == CharSequence.class) {
-      LevenshteinDistance ld = new LevenshteinDistance();
-      score = ld.apply((CharSequence)left, (CharSequence)right);
+      score = stringEqualsDistance((String) left, (String)right);
     }
     if (superClass == Boolean.class) {
       score = left == right ? 0 : 1;
@@ -149,5 +146,19 @@ public class Fitness {
     }
     throw new Exception("Fitness invalid");
   }
+
+  private double stringEqualsDistance(String str, String target) {
+    double distance = 0;
+    for (int i = 0; i < Math.min(str.length(), target.length()); i++) {
+      distance += charEqualsDistance(str.charAt(i), target.charAt(i));
+    }
+    int diffPenalty = Math.abs(str.length() - target.length());
+    return distance + diffPenalty;
+  }
+
+  private double charEqualsDistance(char chr, char target) {
+    return 1.0 - 1.0 / (1.0 + Math.abs(chr - target));
+  }
+
 
 }

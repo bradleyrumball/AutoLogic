@@ -55,11 +55,69 @@ public class MethodLogger {
         return branchEvaluatesTrue == (fScore == 0);
     }
 
+
+    public boolean log(int id, String left, String right, BinaryExpr.Operator operator) {
+        // Careful with the logic here (lots of inverting going on)
+        Fitness f = new Fitness(left, right, branchEvaluatesTrue ? operator : invertOperator(operator));
+        double fScore = Integer.MAX_VALUE;
+        try {
+            fScore = f.getFitness();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // We only set set the fitness value if the current branch is the one we are testing
+        if((id+(branchEvaluatesTrue?0:1)) == currentBranch)
+            fitness = fScore;
+        // to continue with execution (if the fScore is 0 and the branch is taking the path
+        // that is equal to the fScore being zero then return true otherwise false.
+        return branchEvaluatesTrue == (fScore == 0);
+    }
+
+    public boolean log(int id, boolean left, boolean right, BinaryExpr.Operator operator) {
+        // Careful with the logic here (lots of inverting going on)
+        Fitness f = new Fitness(left, right, branchEvaluatesTrue ? operator : invertOperator(operator));
+        double fScore = Integer.MAX_VALUE;
+        try {
+            fScore = f.getFitness();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // We only set set the fitness value if the current branch is the one we are testing
+        if((id+(branchEvaluatesTrue?0:1)) == currentBranch)
+            fitness = fScore;
+        // to continue with execution (if the fScore is 0 and the branch is taking the path
+        // that is equal to the fScore being zero then return true otherwise false.
+        return branchEvaluatesTrue == (fScore == 0);
+    }
+
+    public boolean log(int id, char left, char right, BinaryExpr.Operator operator) {
+        // Careful with the logic here (lots of inverting going on)
+        Fitness f = new Fitness(left, right, branchEvaluatesTrue ? operator : invertOperator(operator));
+        double fScore = Integer.MAX_VALUE;
+        try {
+            fScore = f.getFitness();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // We only set set the fitness value if the current branch is the one we are testing
+        if((id+(branchEvaluatesTrue?0:1)) == currentBranch)
+            fitness = fScore;
+        // to continue with execution (if the fScore is 0 and the branch is taking the path
+        // that is equal to the fScore being zero then return true otherwise false.
+        return branchEvaluatesTrue == (fScore == 0);
+    }
+
+
+
     /**
      * Logging statment for when we are logging a branch and there are no conditions to pass
      * @param id log statement id (branch id)
      * @return true - could return void
      */
+    @Deprecated
     public boolean log(int id){
         if (id == currentBranch) fitness = 0;
         return true;

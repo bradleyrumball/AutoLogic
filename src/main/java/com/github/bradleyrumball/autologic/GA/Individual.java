@@ -19,7 +19,7 @@ public class Individual {
     /**
      * Genes represent the parameters that are going into the method
      */
-    private final int[] genes;
+    private final TypeValue[] genes;
     /**
      * The method that is under test
      */
@@ -49,12 +49,32 @@ public class Individual {
      * @param currentBranch - the current branch number the individual is to test for
      */
     public Individual(Method method, Integer currentBranch) {
-        this.genes = new int[method.getParameterCount() - 1];
+        this.genes = new TypeValue[method.getParameterCount() - 1];
         this.currentBranch = currentBranch;
         this.method = method;
-        int starter = new SecureRandom().nextInt();
-        if (new SecureRandom().nextBoolean()) Arrays.fill(genes, starter);
-        else Arrays.fill(genes, starter % 25);
+
+        int rnd = new SecureRandom().nextInt();
+        int starter = new SecureRandom().nextBoolean() ? rnd : rnd%25;
+        char randChar = getRandomChar();
+        Class<?>[] paramTypes = method.getParameterTypes();
+        for (int i = 0; i < paramTypes.length-1; i++) {
+            if (paramTypes[i] == int.class || paramTypes[i] == long.class)
+                genes[i] = new TypeValue(paramTypes[i], starter);
+            if (paramTypes[i] == double.class || paramTypes[i] == float.class)
+                genes[i] = new TypeValue(paramTypes[i], (double)starter);
+            if (paramTypes[i] == boolean.class)
+                genes[i] = new TypeValue(paramTypes[i], new SecureRandom().nextBoolean());
+            if (paramTypes[i] == char.class)
+                genes[i] = new TypeValue(paramTypes[i], randChar);
+            if (paramTypes[i] == String.class)
+                genes[i] = new TypeValue(paramTypes[i], Character.toString(randChar));
+        }
+    }
+
+    public char getRandomChar() {
+        StringBuilder AlphaNumericString = new StringBuilder("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvxyz");
+        return AlphaNumericString.charAt((int) (Math.random() * AlphaNumericString.length()));
+
     }
 
     /**
@@ -63,7 +83,7 @@ public class Individual {
      * @param currentBranch
      * @param genes
      */
-    public Individual(Method method, Integer currentBranch, int[] genes) {
+    public Individual(Method method, Integer currentBranch, TypeValue[] genes) {
         this.genes = genes;
         this.currentBranch = currentBranch;
         this.method = method;
@@ -75,7 +95,7 @@ public class Individual {
      * @param id the if of the individual gene that we wish to return
      * @return value of individual gene/param
      */
-    protected int getGene(int id) {
+    protected TypeValue getGene(int id) {
         return genes[id];
     }
 
@@ -84,7 +104,7 @@ public class Individual {
      *
      * @return array of genes
      */
-    public int[] getGenes() {
+    public TypeValue[] getGenes() {
         return genes;
     }
 
@@ -104,8 +124,8 @@ public class Individual {
      * @param geneID    The ID of the gene that you wish to set
      * @param geneValue The value that you wish to set the gene to
      */
-    protected void setGene(int geneID, int geneValue) {
-        genes[geneID] = geneValue;
+    protected void setGene(int geneID, Object geneValue) {
+        genes[geneID].setValue(geneValue);
         // If a gene has been updated or set its fitness scores must be restarted
         fitness = Integer.MAX_VALUE;
     }
@@ -119,7 +139,7 @@ public class Individual {
     public double getFitness() {
         if (fitness == Integer.MAX_VALUE) {
             Object[] inputParams = new Object[genes.length + 1];
-            for (int i = 0; i < genes.length; i++) inputParams[i] = genes[i];
+            for (int i = 0; i < genes.length; i++) inputParams[i] = genes[i].getValue();
 
             MethodLogger methodLogger = new MethodLogger(currentBranch);
             inputParams[inputParams.length - 1] = methodLogger;
@@ -161,7 +181,7 @@ public class Individual {
     @Override
     public String toString() {
         String[] genesString = Arrays.stream(genes)
-                .mapToObj(String::valueOf)
+                .map(String::valueOf)
                 .toArray(String[]::new);
         return ("Input Params: " + Arrays.toString(genesString) + " | Fitness: " + fitness + " | Method Out: " + getMethodReturnValue() + "\n");
     }

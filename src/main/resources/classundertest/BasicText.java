@@ -1,4 +1,4 @@
-package com.github.bradleyrumball.autologic;
+package classundertest;
 
 public class BasicText {
 
