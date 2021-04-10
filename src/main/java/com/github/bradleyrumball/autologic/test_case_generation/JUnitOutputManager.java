@@ -1,9 +1,10 @@
 package com.github.bradleyrumball.autologic.test_case_generation;
 
 import com.github.bradleyrumball.autologic.GA.Individual;
+import com.github.bradleyrumball.autologic.GA.TypeValue;
 
-import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -110,8 +111,12 @@ public class JUnitOutputManager {
         List<OutputElement> o = new ArrayList<>();
         for (Individual condition : conditions) {
             ArrayList<String> inputs = new ArrayList<>();
-            for (int gene : condition.getGenes()) {
-                inputs.add(String.valueOf(gene));
+            for (TypeValue gene : condition.getGenes()) {
+                String val = String.valueOf(gene.getValue());
+                Type tp = gene.getType();
+                if (tp == String.class) val = "\"" + val + "\"";
+                if (tp == char.class) val = "\'" + val + "\'";
+                inputs.add(val);
             }
             String[] imports = {classPath};
             o.add(new OutputElement(methodName, inputs, String.valueOf(condition.getMethodReturnValue()), Arrays.asList(imports)));

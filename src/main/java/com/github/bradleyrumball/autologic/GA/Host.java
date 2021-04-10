@@ -37,7 +37,7 @@ public class Host {
      * The maximum number of generations that are permitted per branch
      * after this a branch is determined intractable
      */
-    private static final int MAX_GENERATIONS_PER_BRANCH = 200;
+    private static final int MAX_GENERATIONS_PER_BRANCH = 1000;
 
     /**
      * list of all methods in a class that we are going to test
@@ -86,7 +86,7 @@ public class Host {
                     double populationFitness = population.getFittest().getFitness();
                     int generation = 0;
                     while (populationFitness > 0 && generation <= MAX_GENERATIONS_PER_BRANCH) {
-//                        System.out.println("Current Branch: " + (i+j) + " Current fitness: " + populationFitness);
+                        System.out.println("Current Branch: " + (i+j) + " Current fitness: " + populationFitness);
                         population = evolvePopulation(population, method, branchID);
                         populationFitness = population.getFittest().getFitness();
                         generation++;
@@ -168,8 +168,8 @@ public class Host {
     private Individual crossover(Individual individualA, Individual individualB, Method method, int currentBranch) {
         Individual cross = new Individual(method, currentBranch);
         for (int i = 0; i < cross.getGeneCount(); i++) {
-            if (Math.random() <= CROSSOVER_BIAS) cross.setGene(i, individualA.getGene(i));
-            else cross.setGene(i, individualB.getGene(i));
+            if (Math.random() <= CROSSOVER_BIAS) cross.setGene(i, individualA.getGene(i).getValue());
+            else cross.setGene(i, individualB.getGene(i).getValue());
         }
         return cross;
     }
@@ -187,18 +187,46 @@ public class Host {
      * @param individual the individual to mutate
      */
     private void mutate(Individual individual) {
-        int explorationAmount = 1;
-        if (individual.getFitness() > 10000) explorationAmount = 500;
-        if (individual.getFitness() > 1000) explorationAmount = 50;
-        if (individual.getFitness() > 10) explorationAmount = 5;
+        double explorationAmount = individual.getFitness()/20;
         for (int i = 0; i < individual.getGeneCount(); i++) {
             if (Math.random() <= MUTATION_RATE) {
                 double rand = Math.random();
-                if (rand <= 0.33) individual.setGene(i, individual.getGene(i) + explorationAmount);
-                else if (rand <= 0.66) individual.setGene(i, individual.getGene(i) - explorationAmount);
-                else individual.setGene(i, new SecureRandom().nextInt());
+                if (individual.getGene(i).getType() == double.class) {
+                    if (rand <= 0.33) individual.setGene(i, (double)individual.getGene(i).getValue() + explorationAmount);
+                    else if (rand <= 0.66) individual.setGene(i, (double)individual.getGene(i).getValue() - explorationAmount);
+                    else individual.setGene(i, (double)new SecureRandom().nextInt());
+                }
+                if (individual.getGene(i).getType() == int.class) {
+                    if (rand <= 0.33) individual.setGene(i, (int)((int)individual.getGene(i).getValue() + Math.round(explorationAmount)));
+                    else if (rand <= 0.66) individual.setGene(i, (int)((int)individual.getGene(i).getValue() - Math.round(explorationAmount)));
+                    else individual.setGene(i, new SecureRandom().nextInt());
+                }
+                if (individual.getGene(i).getType() == boolean.class) {
+                    individual.setGene(i, new SecureRandom().nextBoolean());
+                }
+                if (individual.getGene(i).getType() == char.class) {
+                    if (rand <= 0.33) individual.setGene(i, (char)((char)individual.getGene(i).getValue() + Math.round(explorationAmount)));
+                    else if (rand <= 0.66) individual.setGene(i, (char)((char)individual.getGene(i).getValue() - Math.round(explorationAmount)));
+                    else individual.setGene(i, individual.getRandomChar());
+                }
+                if (individual.getGene(i).getType() == String.class) {
+                    if (rand <= 0.4) individual.setGene(i, (String)individual.getGene(i).getValue() + (char)Math.round(explorationAmount));
+                    else if (rand <= 0.8) {
+                        StringBuilder current = new StringBuilder((String)individual.getGene(i).getValue());
+                        for (int i1 = 0; i1 < current.length(); i1++) {
+                            double rand2 = Math.random();
+                            if (rand2 <= 0.25) {
+                                current.setCharAt(i1, (char) (current.charAt(i1)+1));
+                            } else if (rand2 <= 0.5){
+                                current.setCharAt(i1, (char) (current.charAt(i1)-1));
+                            } else if (rand2 <= 0.75) {
+                                current.setCharAt(i1, individual.getRandomChar());
+                            }
+                        }
+                        individual.setGene(i, current.toString());
+                    }
+                }
             }
-
         }
     }
 

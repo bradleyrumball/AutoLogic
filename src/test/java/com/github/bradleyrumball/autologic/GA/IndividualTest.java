@@ -29,7 +29,7 @@ public class IndividualTest {
   @Test
   public void newIndividualGenesAreEqual() {
     int numberOfGenes = individual.getGeneCount();
-    int expectedGene = individual.getGene(0);
+    Object expectedGene = individual.getGene(0);
     boolean genesEqual = true;
     for (int i = 0; i < numberOfGenes; i++) {
       if (individual.getGene(i) != expectedGene) genesEqual = false;
