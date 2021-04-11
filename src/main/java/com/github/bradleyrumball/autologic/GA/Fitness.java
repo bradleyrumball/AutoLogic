@@ -153,7 +153,7 @@ public class Fitness {
       distance += charEqualsDistance(str.charAt(i), target.charAt(i));
     }
     int diffPenalty = Math.abs(str.length() - target.length());
-    return distance + diffPenalty;
+    return distance + diffPenalty*(1000);
   }
 
   private double charEqualsDistance(char chr, char target) {

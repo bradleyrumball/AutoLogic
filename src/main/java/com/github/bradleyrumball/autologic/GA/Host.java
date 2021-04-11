@@ -79,7 +79,7 @@ public class Host {
         methods.parallelStream().forEach(method -> {
             int branchID = 0;
             ArrayList<Individual> solutions = new ArrayList<>();
-            Population population = new Population(300, method, branchID); //50
+            Population population = new Population(400, method, branchID); //50
             for (int i = 0; i < numberOfBranches.getOrDefault(method.getName(), 0); i += 2) {
                 for (int j = 0; j <= 1; j++) {
                     branchID = i + j;
@@ -231,16 +231,20 @@ public class Host {
                     else individual.setGene(i, individual.getRandomChar());
                 }
                 if (indvType == String.class) {
-                    if (rand <= 0.3) individual.setGene(i, (String)indvValue + (char)Math.round(explorationAmount));
+                    if (rand <= 0.01) {
+                        String fixLength = (String)indvValue;
+                        for (int j = 0; j < Math.floor(explorationAmount/1000); j++) fixLength+=individual.getRandomChar();
+                        individual.setGene(i, fixLength);
+                    }
                     else {
                         StringBuilder current = new StringBuilder((String)indvValue);
                         for (int i1 = 0; i1 < current.length(); i1++) {
                             double rand2 = Math.random();
-                            if (rand2 <= 0.33) {
-                                current.setCharAt(i1, (char) (current.charAt(i1)+explorationAmount));
-                            } else if (rand2 <= 0.66){
-                                current.setCharAt(i1, (char) (current.charAt(i1)-explorationAmount));
-                            } else if (rand2 <= 0.75) {
+                            if (rand2 <= 0.15) {
+                                current.setCharAt(i1, (char) (current.charAt(i1)+explorationAmount%1000));
+                            } else if (rand2 <= 0.3){
+                                current.setCharAt(i1, (char) (current.charAt(i1)-explorationAmount%1000));
+                            } else if (rand2 <= 0.55) {
                                 current.setCharAt(i1, individual.getRandomChar());
                             }
                         }
