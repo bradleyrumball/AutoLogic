@@ -53,14 +53,21 @@ public class Individual {
         this.currentBranch = currentBranch;
         this.method = method;
 
-        int rnd = new SecureRandom().nextInt();
+        int rndByte = new SecureRandom().nextInt(255)-128;
+        int rnd = new SecureRandom().nextInt(1 << 16);
         int starter = new SecureRandom().nextBoolean() ? rnd : rnd%25;
         char randChar = getRandomChar();
         Class<?>[] paramTypes = method.getParameterTypes();
         for (int i = 0; i < paramTypes.length-1; i++) {
             if (paramTypes[i] == int.class || paramTypes[i] == long.class)
                 genes[i] = new TypeValue(paramTypes[i], starter);
-            if (paramTypes[i] == double.class || paramTypes[i] == float.class)
+            if (paramTypes[i] == short.class)
+                genes[i] = new TypeValue(paramTypes[i], (short)starter);
+            if (paramTypes[i] == byte.class)
+                genes[i] = new TypeValue(paramTypes[i], (byte)starter);
+            if (paramTypes[i] == float.class)
+                genes[i] = new TypeValue(paramTypes[i], (float)starter);
+            if (paramTypes[i] == double.class)
                 genes[i] = new TypeValue(paramTypes[i], (double)starter);
             if (paramTypes[i] == boolean.class)
                 genes[i] = new TypeValue(paramTypes[i], new SecureRandom().nextBoolean());

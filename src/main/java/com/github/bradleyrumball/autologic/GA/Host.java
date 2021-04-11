@@ -78,7 +78,7 @@ public class Host {
         methods.parallelStream().forEach(method -> {
             int branchID = 0;
             ArrayList<Individual> solutions = new ArrayList<>();
-            Population population = new Population(100, method, branchID); //50
+            Population population = new Population(300, method, branchID); //50
             for (int i = 0; i < numberOfBranches.getOrDefault(method.getName(), 0); i += 2) {
                 for (int j = 0; j <= 1; j++) {
                     branchID = i + j;
@@ -118,14 +118,17 @@ public class Host {
         Population newPopulation = new Population(0, method, currentBranch);
 
         // Elitism - Get best individual
-        int elitismOffset = 0;
+        int offset = 0;
         if (ELITISM) {
             newPopulation.addIndividual(population.getFittest());
-            elitismOffset = 1;
+            offset++;
         }
+        newPopulation.addIndividual(new Individual(method, currentBranch));
+        offset++;
+
 
         // Crossover - get best x individuals and cross them
-        IntStream.range(elitismOffset, population.getIndividuals().size()).parallel().mapToObj(i -> {
+        IntStream.range(offset, population.getIndividuals().size()).parallel().mapToObj(i -> {
             Individual tournamentWinner1 = tournament(population, method, currentBranch);
             Individual tournamentWinner2 = tournament(population, method, currentBranch);
             Individual crossed = crossover(tournamentWinner1, tournamentWinner2, method, currentBranch);
@@ -187,7 +190,7 @@ public class Host {
      * @param individual the individual to mutate
      */
     private void mutate(Individual individual) {
-        double explorationAmount = individual.getFitness()/20;
+        double explorationAmount = individual.getFitness();
         for (int i = 0; i < individual.getGeneCount(); i++) {
             if (Math.random() <= MUTATION_RATE) {
                 double rand = Math.random();
@@ -196,9 +199,24 @@ public class Host {
                     else if (rand <= 0.66) individual.setGene(i, (double)individual.getGene(i).getValue() - explorationAmount);
                     else individual.setGene(i, (double)new SecureRandom().nextInt());
                 }
+                if (individual.getGene(i).getType() == float.class) {
+                    if (rand <= 0.33) individual.setGene(i, (float)((float)individual.getGene(i).getValue() + explorationAmount));
+                    else if (rand <= 0.66) individual.setGene(i, (float)((float)individual.getGene(i).getValue() - explorationAmount));
+                    else individual.setGene(i, (float)new SecureRandom().nextInt());
+                }
                 if (individual.getGene(i).getType() == int.class) {
                     if (rand <= 0.33) individual.setGene(i, (int)((int)individual.getGene(i).getValue() + Math.round(explorationAmount)));
                     else if (rand <= 0.66) individual.setGene(i, (int)((int)individual.getGene(i).getValue() - Math.round(explorationAmount)));
+                    else individual.setGene(i, new SecureRandom().nextInt());
+                }
+                if (individual.getGene(i).getType() == short.class) {
+                    if (rand <= 0.33) individual.setGene(i, (short)((short)individual.getGene(i).getValue() + Math.round(explorationAmount)));
+                    else if (rand <= 0.66) individual.setGene(i, (short)((short)individual.getGene(i).getValue() - Math.round(explorationAmount)));
+                    else individual.setGene(i, (short)new SecureRandom().nextInt(Short.MAX_VALUE+1));
+                }
+                if (individual.getGene(i).getType() == byte.class) {
+                    if (rand <= 0.33) individual.setGene(i, (byte)((byte)individual.getGene(i).getValue() + Math.round(explorationAmount)));
+                    else if (rand <= 0.66) individual.setGene(i, (byte)((byte)individual.getGene(i).getValue() - Math.round(explorationAmount)));
                     else individual.setGene(i, new SecureRandom().nextInt());
                 }
                 if (individual.getGene(i).getType() == boolean.class) {
@@ -210,8 +228,8 @@ public class Host {
                     else individual.setGene(i, individual.getRandomChar());
                 }
                 if (individual.getGene(i).getType() == String.class) {
-                    if (rand <= 0.4) individual.setGene(i, (String)individual.getGene(i).getValue() + (char)Math.round(explorationAmount));
-                    else if (rand <= 0.8) {
+                    if (rand <= 0.2) individual.setGene(i, (String)individual.getGene(i).getValue() + (char)Math.round(explorationAmount));
+                    else if (rand <= 1) {
                         StringBuilder current = new StringBuilder((String)individual.getGene(i).getValue());
                         for (int i1 = 0; i1 < current.length(); i1++) {
                             double rand2 = Math.random();

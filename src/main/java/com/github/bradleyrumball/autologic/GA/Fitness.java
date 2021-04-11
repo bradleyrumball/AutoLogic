@@ -73,7 +73,7 @@ public class Fitness {
     if (superClass == Boolean.class) {
       score = left == right ? 0 : 1;
     }
-    return (score == 0) ? 0 : score + K;
+    return (score == 0) ? 0 : score;// + K;
   }
 
   /**
@@ -100,7 +100,7 @@ public class Fitness {
    */
   private double lessThan() {
     double score = (double)left - (double)right;
-    return (score < 0) ? 0 : (score + K);
+    return (score < 0) ? 0 : (score);// + K);
   }
 
   /**
@@ -109,7 +109,7 @@ public class Fitness {
    */
   private double lessThanEqualTo() {
     double score = (double)left - (double)right;
-    return (score <= 0) ? 0 : (score + K);
+    return (score <= 0) ? 0 : (score);// + K);
   }
 
   /**
@@ -118,7 +118,7 @@ public class Fitness {
    */
   private double greaterThan() {
     double score = (double)right - (double)left;
-    return (score < 0) ? 0 : (score + K);
+    return (score < 0) ? 0 : (score);// + K);
   }
 
   /**
@@ -127,7 +127,7 @@ public class Fitness {
    */
   private double greaterThanEqualTo() {
     double score = (double)right - (double)left;
-    return (score <= 0) ? 0 : (score + K);
+    return (score <= 0) ? 0 : (score);// + K);
   }
 
   /**
