@@ -79,7 +79,7 @@ public class Individual {
     }
 
     public char getRandomChar() {
-        StringBuilder AlphaNumericString = new StringBuilder("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvxyz");
+        StringBuilder AlphaNumericString = new StringBuilder("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 abcdefghijklmnopqrstuvxyz");
         return AlphaNumericString.charAt((int) (Math.random() * AlphaNumericString.length()));
 
     }

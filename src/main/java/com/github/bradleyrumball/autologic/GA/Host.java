@@ -4,6 +4,7 @@ package com.github.bradleyrumball.autologic.GA;
 import com.github.bradleyrumball.autologic.test_case_generation.JUnitOutputManager;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -192,51 +193,53 @@ public class Host {
     private void mutate(Individual individual) {
         double explorationAmount = individual.getFitness();
         for (int i = 0; i < individual.getGeneCount(); i++) {
+            Type indvType = individual.getGene(i).getType();
+            Object indvValue = individual.getGene(i).getValue();
             if (Math.random() <= MUTATION_RATE) {
                 double rand = Math.random();
-                if (individual.getGene(i).getType() == double.class) {
-                    if (rand <= 0.33) individual.setGene(i, (double)individual.getGene(i).getValue() + explorationAmount);
-                    else if (rand <= 0.66) individual.setGene(i, (double)individual.getGene(i).getValue() - explorationAmount);
+                if (indvType == double.class) {
+                    if (rand <= 0.33) individual.setGene(i, (double)indvValue + explorationAmount);
+                    else if (rand <= 0.66) individual.setGene(i, (double)indvValue - explorationAmount);
                     else individual.setGene(i, (double)new SecureRandom().nextInt());
                 }
-                if (individual.getGene(i).getType() == float.class) {
-                    if (rand <= 0.33) individual.setGene(i, (float)((float)individual.getGene(i).getValue() + explorationAmount));
-                    else if (rand <= 0.66) individual.setGene(i, (float)((float)individual.getGene(i).getValue() - explorationAmount));
-                    else individual.setGene(i, (float)new SecureRandom().nextInt(Math.round(Float.MAX_VALUE)+1));
+                if (indvType == float.class) {
+                    if (rand <= 0.33) individual.setGene(i, (float)((float)indvValue + explorationAmount));
+                    else if (rand <= 0.66) individual.setGene(i, (float)((float)indvValue - explorationAmount));
+                    else individual.setGene(i, (float)new SecureRandom().nextInt(Math.round(Float.MAX_VALUE)));
                 }
-                if (individual.getGene(i).getType() == int.class) {
-                    if (rand <= 0.33) individual.setGene(i, (int)((int)individual.getGene(i).getValue() + Math.round(explorationAmount)));
-                    else if (rand <= 0.66) individual.setGene(i, (int)((int)individual.getGene(i).getValue() - Math.round(explorationAmount)));
+                if (indvType == int.class) {
+                    if (rand <= 0.33) individual.setGene(i, (int)((int)indvValue + Math.round(explorationAmount)));
+                    else if (rand <= 0.66) individual.setGene(i, (int)((int)indvValue - Math.round(explorationAmount)));
                     else individual.setGene(i, new SecureRandom().nextInt());
                 }
-                if (individual.getGene(i).getType() == short.class) {
-                    if (rand <= 0.33) individual.setGene(i, (short)((short)individual.getGene(i).getValue() + Math.round(explorationAmount)));
-                    else if (rand <= 0.66) individual.setGene(i, (short)((short)individual.getGene(i).getValue() - Math.round(explorationAmount)));
-                    else individual.setGene(i, (short)new SecureRandom().nextInt(Short.MAX_VALUE+1));
+                if (indvType == short.class) {
+                    if (rand <= 0.33) individual.setGene(i, (short)((short)indvValue + Math.round(explorationAmount)));
+                    else if (rand <= 0.66) individual.setGene(i, (short)((short)indvValue - Math.round(explorationAmount)));
+                    else individual.setGene(i, (short)new SecureRandom().nextInt(Short.MAX_VALUE));
                 }
-                if (individual.getGene(i).getType() == byte.class) {
-                    if (rand <= 0.33) individual.setGene(i, (byte)((byte)individual.getGene(i).getValue() + Math.round(explorationAmount)));
-                    else if (rand <= 0.66) individual.setGene(i, (byte)((byte)individual.getGene(i).getValue() - Math.round(explorationAmount)));
+                if (indvType == byte.class) {
+                    if (rand <= 0.33) individual.setGene(i, (byte)((byte)indvValue + Math.round(explorationAmount)));
+                    else if (rand <= 0.66) individual.setGene(i, (byte)((byte)indvValue - Math.round(explorationAmount)));
                     else individual.setGene(i, (byte)(new SecureRandom().nextInt(255)-128));
                 }
-                if (individual.getGene(i).getType() == boolean.class) {
+                if (indvType == boolean.class) {
                     individual.setGene(i, new SecureRandom().nextBoolean());
                 }
-                if (individual.getGene(i).getType() == char.class) {
-                    if (rand <= 0.33) individual.setGene(i, (char)((char)individual.getGene(i).getValue() + Math.round(explorationAmount)));
-                    else if (rand <= 0.66) individual.setGene(i, (char)((char)individual.getGene(i).getValue() - Math.round(explorationAmount)));
+                if (indvType == char.class) {
+                    if (rand <= 0.33) individual.setGene(i, (char)((char)indvValue + Math.round(explorationAmount)));
+                    else if (rand <= 0.66) individual.setGene(i, (char)((char)indvValue - Math.round(explorationAmount)));
                     else individual.setGene(i, individual.getRandomChar());
                 }
-                if (individual.getGene(i).getType() == String.class) {
-                    if (rand <= 0.2) individual.setGene(i, (String)individual.getGene(i).getValue() + (char)Math.round(explorationAmount));
-                    else if (rand <= 1) {
-                        StringBuilder current = new StringBuilder((String)individual.getGene(i).getValue());
+                if (indvType == String.class) {
+                    if (rand <= 0.3) individual.setGene(i, (String)indvValue + (char)Math.round(explorationAmount));
+                    else {
+                        StringBuilder current = new StringBuilder((String)indvValue);
                         for (int i1 = 0; i1 < current.length(); i1++) {
                             double rand2 = Math.random();
-                            if (rand2 <= 0.25) {
-                                current.setCharAt(i1, (char) (current.charAt(i1)+1));
-                            } else if (rand2 <= 0.5){
-                                current.setCharAt(i1, (char) (current.charAt(i1)-1));
+                            if (rand2 <= 0.33) {
+                                current.setCharAt(i1, (char) (current.charAt(i1)+explorationAmount));
+                            } else if (rand2 <= 0.66){
+                                current.setCharAt(i1, (char) (current.charAt(i1)-explorationAmount));
                             } else if (rand2 <= 0.75) {
                                 current.setCharAt(i1, individual.getRandomChar());
                             }
