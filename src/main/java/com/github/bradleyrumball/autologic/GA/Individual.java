@@ -64,7 +64,7 @@ public class Individual {
             if (paramTypes[i] == short.class)
                 genes[i] = new TypeValue(paramTypes[i], (short)starter);
             if (paramTypes[i] == byte.class)
-                genes[i] = new TypeValue(paramTypes[i], (byte)starter);
+                genes[i] = new TypeValue(paramTypes[i], (byte)rndByte);
             if (paramTypes[i] == float.class)
                 genes[i] = new TypeValue(paramTypes[i], (float)starter);
             if (paramTypes[i] == double.class)

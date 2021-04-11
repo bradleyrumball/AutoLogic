@@ -202,7 +202,7 @@ public class Host {
                 if (individual.getGene(i).getType() == float.class) {
                     if (rand <= 0.33) individual.setGene(i, (float)((float)individual.getGene(i).getValue() + explorationAmount));
                     else if (rand <= 0.66) individual.setGene(i, (float)((float)individual.getGene(i).getValue() - explorationAmount));
-                    else individual.setGene(i, (float)new SecureRandom().nextInt());
+                    else individual.setGene(i, (float)new SecureRandom().nextInt(Math.round(Float.MAX_VALUE)+1));
                 }
                 if (individual.getGene(i).getType() == int.class) {
                     if (rand <= 0.33) individual.setGene(i, (int)((int)individual.getGene(i).getValue() + Math.round(explorationAmount)));
@@ -217,7 +217,7 @@ public class Host {
                 if (individual.getGene(i).getType() == byte.class) {
                     if (rand <= 0.33) individual.setGene(i, (byte)((byte)individual.getGene(i).getValue() + Math.round(explorationAmount)));
                     else if (rand <= 0.66) individual.setGene(i, (byte)((byte)individual.getGene(i).getValue() - Math.round(explorationAmount)));
-                    else individual.setGene(i, new SecureRandom().nextInt());
+                    else individual.setGene(i, (byte)(new SecureRandom().nextInt(255)-128));
                 }
                 if (individual.getGene(i).getType() == boolean.class) {
                     individual.setGene(i, new SecureRandom().nextBoolean());
