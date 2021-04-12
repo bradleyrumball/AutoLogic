@@ -9,6 +9,24 @@ Team:
 
 >Brief: https://vle.shef.ac.uk/bbcswebdav/pid-4948873-dt-content-rid-33184548_1/courses/COM3529.B.224696/assignment.pdf
 
+# How to run
+
+- Please read the AutoLogic Manual pdf for detailed instructions on how to run.
+- Alternatively please view the following video ....
+
+# Contributions
+
+### Bradley Rumball ### 
+- Test Requirement Generation 
+- Instrumentation 
+- Test Data Generation
+- Coverage Level Computation and Reporting
+
+### Harley Everett ###
+- Analysis of the Method Under Test
+- Test Suite Output
+- GitHub Repo, README.md, Documentation
+
 # TODO
 
 #### Analysis of the Method Under Test ####
@@ -44,7 +62,7 @@ Team:
 #### GitHub Repo andREADME.md ####
 - [ ] Problems with repo (e.g., files missing) and/or instructions deficient 😐/😟/😭
 - [ ] Everything works and can be setup from the repo, according to instructions supplied in theREADME.md 🙂
-- [ ] README.md especially  well-polished,  installation  and  running  tool worked flawlessly 😁
+- [x] README.md especially  well-polished,  installation  and  running  tool worked flawlessly 😁
 
 Key:
 😁 = 1st
