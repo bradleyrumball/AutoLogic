@@ -27,7 +27,7 @@ Team:
 - Test Suite Output
 - GitHub Repo, README.md, Documentation
 
-# TODO
+# Marking criteria
 
 #### Analysis of the Method Under Test ####
 - [ ] Requires significant manual input 😟/😭
