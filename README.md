@@ -11,7 +11,7 @@ Team:
 
 # How to run
 
-- Please read the AutoLogic Manual pdf for detailed instructions on how to run.
+- Please read the [AutoLogic Manual pdf](Auto Logic Manual.pdf) for detailed instructions on how to run.
 - Alternatively please view the following video ....
 
 # Contributions
