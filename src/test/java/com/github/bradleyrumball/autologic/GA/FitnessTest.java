@@ -151,7 +151,7 @@ public class FitnessTest {
         String b = "herd";
         Fitness fitness = new Fitness(a,b, BinaryExpr.Operator.EQUALS);
         double fitnessScore = fitness.getFitness();
-        assertEquals(3, fitnessScore, 0);
+        assertEquals(1.6571428571428573, fitnessScore, 0);
     }
 
     @Test
@@ -234,7 +234,7 @@ public class FitnessTest {
     public void checkLessThanEqualWhenGreater() throws Exception {
         Fitness fitness = new Fitness(6,5, BinaryExpr.Operator.LESS_EQUALS);
         double fitnessScore = fitness.getFitness();
-        assertEquals(2, fitnessScore, 0);
+        assertEquals(1, fitnessScore, 0);
     }
 //
     @Test
@@ -276,7 +276,7 @@ public class FitnessTest {
     public void checkGreaterThanEqualWhenLess() throws Exception {
         Fitness fitness = new Fitness(5,6, BinaryExpr.Operator.GREATER_EQUALS);
         double fitnessScore = fitness.getFitness();
-        assertEquals(2, fitnessScore, 0);
+        assertEquals(1, fitnessScore, 0);
     }
 
 
