@@ -1,4 +1,4 @@
-package classundertest;
+package com.github.bradleyrumball.autologic;
 
 public class AByteADay {
 
