@@ -94,7 +94,7 @@ public class MethodLogger {
 
     public boolean log(int id, char left, char right, BinaryExpr.Operator operator) {
         // Careful with the logic here (lots of inverting going on)
-        Fitness f = new Fitness(left, right, branchEvaluatesTrue ? operator : invertOperator(operator));
+        Fitness f = new Fitness((int)left, (int)right, branchEvaluatesTrue ? operator : invertOperator(operator));
         double fScore = Integer.MAX_VALUE;
         try {
             fScore = f.getFitness();
