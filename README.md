@@ -12,7 +12,12 @@ Team:
 # How to run
 
 - Please read the [AutoLogic Manual pdf](https://github.com/bradleyrumball/AutoLogic/blob/main/Auto%20Logic%20Manual.pdf) for detailed instructions on how to run.
-- Alternatively please view the following video https://www.youtube.com/watch?v=wuFh5J9Y0PA
+- Alternatively please view the following video:
+
+[![preview](https://user-images.githubusercontent.com/34070006/115147505-28131100-a053-11eb-83d3-d3cec81e4ece.png)](https://www.youtube.com/watch?v=wuFh5J9Y0PA)
+
+
+
 
 # Contributions
 
