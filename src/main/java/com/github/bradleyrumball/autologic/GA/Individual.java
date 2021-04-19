@@ -59,8 +59,10 @@ public class Individual {
         char randChar = getRandomChar();
         Class<?>[] paramTypes = method.getParameterTypes();
         for (int i = 0; i < paramTypes.length-1; i++) {
-            if (paramTypes[i] == int.class || paramTypes[i] == long.class)
+            if (paramTypes[i] == int.class)
                 genes[i] = new TypeValue(paramTypes[i], starter);
+            if (paramTypes[i] == long.class)
+                genes[i] = new TypeValue(paramTypes[i], (long)starter);
             if (paramTypes[i] == short.class)
                 genes[i] = new TypeValue(paramTypes[i], (short)starter);
             if (paramTypes[i] == byte.class)

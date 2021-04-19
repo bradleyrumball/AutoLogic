@@ -112,11 +112,13 @@ public class JUnitOutputManager {
         for (Individual condition : conditions) {
             ArrayList<String> inputs = new ArrayList<>();
             for (TypeValue gene : condition.getGenes()) {
+                String casting = String.valueOf(gene.getValue().getClass());
+                String castingFormatted = casting(casting);
                 String val = String.valueOf(gene.getValue());
                 Type tp = gene.getType();
                 if (tp == String.class) val = "\"" + val + "\"";
                 if (tp == char.class) val = "\'" + val + "\'";
-                inputs.add(val);
+                inputs.add(castingFormatted + val);
             }
             String[] imports = {classPath};
             o.add(new OutputElement(methodName, inputs, String.valueOf(condition.getMethodReturnValue()), Arrays.asList(imports)));
@@ -128,5 +130,23 @@ public class JUnitOutputManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Casts to add to the input varible
+     * @param cast java type
+     * @return a string to add to the variable to be casted to
+     */
+    public String casting (String cast) {
+        if (cast.equals("class java.lang.Byte")) {
+            return "(byte)";
+        } else if (cast.equals("class java.lang.Short")) {
+            return "(short)";
+        } else if (cast.equals("class java.lang.Float")) {
+            return "(float)";
+        } else if (cast.equals("class java.lang.Long")) {
+            return "(long)";
+        }
+        return "";
     }
 }
