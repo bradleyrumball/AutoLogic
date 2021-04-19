@@ -21,16 +21,17 @@ Team:
 
 # Contributions
 
-### Bradley Rumball ### 
+### Bradley D Rumball ### 
 - Test Requirement Generation 
 - Instrumentation 
 - Test Data Generation
 - Coverage Level Computation and Reporting
+- GitHub Repo => CI/CD (GitHub Actions + Travis), Coverage Integeration (CodeCov), the most beautiful logo you've ever seen.
 
 ### Harley Everett ###
 - Analysis of the Method Under Test
 - Test Suite Output
-- GitHub Repo, README.md, Documentation
+- GitHub Repo => README.md, Documentation
 
 # Marking criteria
 
@@ -40,8 +41,8 @@ Team:
 - [X] Method under test fully parsed, with conditions and structure of predicates extracted and analysed 😁
 
 #### Test Requirement Generation ####
-- [X] Simple coverage criterion implemented (e.g., Condition Coverage) 😟/😭
-- [X] Advanced coverage criterion implemented (e.g., Restricted or Cor-related MCDC) 🙂/😐
+- [X] Simple coverage criterion implemented (e.g. Condition Coverage) 😟/😭
+- [X] Advanced coverage criterion implemented (e.g. Restricted or Correlated MCDC) 🙂/😐
 - [ ] Multiple criteria implemented 😁
 
 #### Instrumentation ####
@@ -51,23 +52,23 @@ Team:
 
 #### Test Data Generation ####
 - [ ] Very basic random number generation 😭
-- [ ] Configurable random number generation (e.g., input parameters can be configured with upper and lower bounds) 😟
-- [ ] Advanced random number generation (e.g., can be used to generate non-numerical inputs randomly, such as strings and other types, like objects) 😐
-- [ ] Advanced random number generation (e.g., can use example inputs as the basis of seeds, similar to fuzzing), or, applies a search-based technique “out of the box” (e.g., the AVMf) 🙂
-- [x] Applies  own  search-based  method  (e.g.,  implemented  own  evolutionary algorithm) or similarly advanced technique 😁
+- [ ] Configurable random number generation (e.g. input parameters can be configured with upper and lower bounds) 😟
+- [ ] Advanced random number generation (e.g. can be used to generate non-numerical inputs randomly, such as strings and other types, like objects) 😐
+- [ ] Advanced random number generation (e.g. can use example inputs as the basis of seeds, similar to fuzzing), or, applies a search-based technique “out of the box” (e.g. the AVMf) 🙂
+- [x] Applies  own  search-based  method (e.g.  implemented  own  evolutionary algorithm) or similarly advanced technique 😁
 
 #### Coverage Level Computation and Reporting ####
 - [ ] Coverage level computed for simple criterion as implemented for (2)above 😐/😟/😭
-- [X] Coverage  level  computed  and  individual  uncovered  elements  re-ported 😁/🙂
+- [X] Coverage  level computed and individual uncovered elements re-ported 😁/🙂
 
 #### Test Suite Output ####
 - [ ] Simple output of inputs to the command line 😐/😟/😭
 - [x] Writes out JUnit Java code that can be compiled separately and run 😁/🙂
 
 #### GitHub Repo andREADME.md ####
-- [ ] Problems with repo (e.g., files missing) and/or instructions deficient 😐/😟/😭
-- [ ] Everything works and can be setup from the repo, according to instructions supplied in theREADME.md 🙂
-- [x] README.md especially  well-polished,  installation  and  running  tool worked flawlessly 😁
+- [ ] Problems with repo (e.g. files missing) and/or instructions deficient 😐/😟/😭
+- [ ] Everything works and can be setup from the repo, according to instructions supplied in the README.md 🙂
+- [x] README.md especially well-polished, installation and running tool worked flawlessly 😁
 
 Key:
 😁 = 1st
