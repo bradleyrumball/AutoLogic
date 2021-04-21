@@ -195,4 +195,31 @@ public class Individual {
         return ("Input Params: " + Arrays.toString(genesString) + " | Fitness: " + fitness + " | Method Out: " + getMethodReturnValue() + "\n");
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Individual that = (Individual) o;
+
+        if (Double.compare(that.fitness, fitness) != 0) return false;
+        if (currentBranch != that.currentBranch) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(genes, that.genes)) return false;
+        if (method != null ? !method.equals(that.method) : that.method != null) return false;
+        return methodReturnValue != null ? methodReturnValue.equals(that.methodReturnValue) : that.methodReturnValue == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = Arrays.hashCode(genes);
+        result = 31 * result + (method != null ? method.hashCode() : 0);
+        temp = Double.doubleToLongBits(fitness);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + currentBranch;
+        result = 31 * result + (methodReturnValue != null ? methodReturnValue.hashCode() : 0);
+        return result;
+    }
 }
