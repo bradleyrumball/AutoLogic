@@ -2,7 +2,7 @@ package com.github.bradleyrumball.autologic.junit_test_classes;
 
 
 public class TrianglesJunit {
-
+    // Test class for Junit test cases
     public enum Type {
         INVALID,
         SCALENE,
